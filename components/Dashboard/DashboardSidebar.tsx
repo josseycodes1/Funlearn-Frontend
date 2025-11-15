@@ -24,13 +24,13 @@ export default function DashboardSidebar({
   collapsed = false,
 }: DashboardSidebarProps) {
   const menuItems = [
-    { id: "overview", label: "Overview", icon: "📊" },
-    { id: "chatbot", label: "AI Chat Bot", icon: "🤖" },
-    { id: "quiz", label: "Take Quiz", icon: "🎯" },
-    { id: "chatroom", label: "Chat Room", icon: "💬" },
-    { id: "leaderboard", label: "Leaderboard", icon: "🏆" },
-    { id: "profile", label: "Profile", icon: "👤" },
-    { id: "settings", label: "Settings", icon: "⚙️" },
+    { id: "overview", label: "Overview", icon: "" },
+    { id: "chatbot", label: "AI Chat Bot", icon: "" },
+    { id: "quiz", label: "Take Quiz", icon: "" },
+    { id: "chatroom", label: "Chat Room", icon: "" },
+    { id: "leaderboard", label: "Leaderboard", icon: "" },
+    { id: "profile", label: "Profile", icon: "" },
+    // { id: "settings", label: "Settings", icon: "" },
   ];
 
   if (hideGeneralSidebar) {

@@ -70,7 +70,7 @@ export default function DashboardHeader({
 
           <div className="flex flex-col">
             <h1 className="text-xl font-semibold text-gray-900">
-              Welcome back, {user?.userName || "Student"}! 👋
+              Welcome back, {user?.userName || "Student"}! 
             </h1>
             <p className="text-sm text-gray-600">
               Ready to continue your learning adventure?

@@ -42,6 +42,7 @@ export default function Profile({ user }: ProfileProps) {
   const [activeTab, setActiveTab] = useState<"profile" | "achievements">("profile");
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
+  const [editData, setEditData] = useState<UserProfile | null>(null);
   const [rankInfo, setRankInfo] = useState<RankInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -73,6 +74,7 @@ export default function Profile({ user }: ProfileProps) {
         const data = await response.json();
         if (data.success) {
           setProfileData(data.user);
+          setEditData(data.user); // Initialize edit data with current profile
           setRankInfo(data.rankInfo);
           generateRankAchievements(data.rankInfo);
         }
@@ -115,7 +117,7 @@ export default function Profile({ user }: ProfileProps) {
   };
 
   const handleSave = async () => {
-    if (!profileData) return;
+    if (!editData) return;
 
     setIsSaving(true);
     try {
@@ -123,12 +125,12 @@ export default function Profile({ user }: ProfileProps) {
       const formData = new FormData();
       
       // Append profile data
-      if (profileData.bio !== undefined) formData.append("bio", profileData.bio);
-      if (profileData.school !== undefined) formData.append("school", profileData.school);
-      if (profileData.level !== undefined) formData.append("level", profileData.level);
-      if (profileData.userName !== undefined) formData.append("userName", profileData.userName);
-      if (profileData.interests !== undefined) {
-        formData.append("interests", JSON.stringify(profileData.interests));
+      if (editData.bio !== undefined) formData.append("bio", editData.bio);
+      if (editData.school !== undefined) formData.append("school", editData.school);
+      if (editData.level !== undefined) formData.append("level", editData.level);
+      if (editData.userName !== undefined) formData.append("userName", editData.userName);
+      if (editData.interests !== undefined) {
+        formData.append("interests", JSON.stringify(editData.interests));
       }
 
       const response = await fetch(`${BACKEND_URL}/api/users/profile`, {
@@ -142,7 +144,7 @@ export default function Profile({ user }: ProfileProps) {
       if (response.ok) {
         const data = await response.json();
         if (data.success) {
-          setProfileData(data.user);
+          setProfileData(data.user); // Update the main profile data with saved changes
           setIsEditing(false);
         }
       } else {
@@ -156,6 +158,11 @@ export default function Profile({ user }: ProfileProps) {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleCancel = () => {
+    setEditData(profileData); // Reset edit data to current profile data
+    setIsEditing(false);
   };
 
   const handleFileUpload = async (file: File) => {
@@ -182,6 +189,7 @@ export default function Profile({ user }: ProfileProps) {
         const data = await response.json();
         if (data.success) {
           setProfileData(data.user);
+          setEditData(data.user);
           await fetchUserProfile(); // Refresh to get updated rank info if score changed
         }
       } else {
@@ -197,10 +205,10 @@ export default function Profile({ user }: ProfileProps) {
   };
 
   const addInterest = (interest: string) => {
-    if (interest.trim() && profileData) {
-      const currentInterests = profileData.interests || [];
+    if (interest.trim() && editData) {
+      const currentInterests = editData.interests || [];
       if (!currentInterests.includes(interest.trim())) {
-        setProfileData(prev => prev ? {
+        setEditData(prev => prev ? {
           ...prev,
           interests: [...currentInterests, interest.trim()]
         } : null);
@@ -209,8 +217,8 @@ export default function Profile({ user }: ProfileProps) {
   };
 
   const removeInterest = (interestToRemove: string) => {
-    if (profileData) {
-      setProfileData(prev => prev ? {
+    if (editData) {
+      setEditData(prev => prev ? {
         ...prev,
         interests: (prev.interests || []).filter(interest => interest !== interestToRemove)
       } : null);
@@ -239,7 +247,7 @@ export default function Profile({ user }: ProfileProps) {
 
   return (
     <div className="max-w-4xl mx-auto">
-      {/* Header */}
+      {/* Header - Always shows saved profile data, not edit data */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
         <div className="flex items-center space-x-6">
           <div className="relative">
@@ -303,7 +311,7 @@ export default function Profile({ user }: ProfileProps) {
             )}
           </div>
           <button
-            onClick={() => setIsEditing(!isEditing)}
+            onClick={() => isEditing ? handleCancel() : setIsEditing(true)}
             disabled={isSaving}
             className="bg-funlearn6 text-white px-4 py-2 rounded-lg font-semibold hover:bg-funlearn7 transition-colors disabled:opacity-50"
           >
@@ -353,14 +361,14 @@ export default function Profile({ user }: ProfileProps) {
                     </label>
                     <input
                       type="text"
-                      value={profileData.userName || ""}
+                      value={editData?.userName || ""}
                       onChange={(e) =>
-                        setProfileData(prev => prev ? {
+                        setEditData(prev => prev ? {
                           ...prev,
                           userName: e.target.value
                         } : null)
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent text-black"
                     />
                   </div>
                   <div>
@@ -369,14 +377,14 @@ export default function Profile({ user }: ProfileProps) {
                     </label>
                     <input
                       type="email"
-                      value={profileData.email || ""}
+                      value={editData?.email || ""}
                       onChange={(e) =>
-                        setProfileData(prev => prev ? {
+                        setEditData(prev => prev ? {
                           ...prev,
                           email: e.target.value
                         } : null)
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent text-black"
                     />
                   </div>
                   <div className="md:col-span-2">
@@ -384,15 +392,15 @@ export default function Profile({ user }: ProfileProps) {
                       Bio
                     </label>
                     <textarea
-                      value={profileData.bio || ""}
+                      value={editData?.bio || ""}
                       onChange={(e) =>
-                        setProfileData(prev => prev ? {
+                        setEditData(prev => prev ? {
                           ...prev,
                           bio: e.target.value
                         } : null)
                       }
                       rows={3}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent text-black"
                     />
                   </div>
                   <div>
@@ -401,14 +409,14 @@ export default function Profile({ user }: ProfileProps) {
                     </label>
                     <input
                       type="text"
-                      value={profileData.school || ""}
+                      value={editData?.school || ""}
                       onChange={(e) =>
-                        setProfileData(prev => prev ? {
+                        setEditData(prev => prev ? {
                           ...prev,
                           school: e.target.value
                         } : null)
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent text-black"
                     />
                   </div>
                   <div>
@@ -416,14 +424,14 @@ export default function Profile({ user }: ProfileProps) {
                       Grade Level
                     </label>
                     <select
-                      value={profileData.level || ""}
+                      value={editData?.level || ""}
                       onChange={(e) =>
-                        setProfileData(prev => prev ? {
+                        setEditData(prev => prev ? {
                           ...prev,
                           level: e.target.value
                         } : null)
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent text-black"
                     >
                       <option value="">Select Grade Level</option>
                       <option>Elementary</option>
@@ -438,7 +446,7 @@ export default function Profile({ user }: ProfileProps) {
                       Interests
                     </label>
                     <div className="flex flex-wrap gap-2 mb-3">
-                      {(profileData.interests || []).map((interest) => (
+                      {(editData?.interests || []).map((interest) => (
                         <span
                           key={interest}
                           className="inline-flex items-center px-3 py-1 bg-funlearn2 text-funlearn8 rounded-full text-sm"
@@ -463,7 +471,7 @@ export default function Profile({ user }: ProfileProps) {
                             (e.target as HTMLInputElement).value = "";
                           }
                         }}
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent"
+                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent text-black"
                       />
                       <button
                         onClick={() => {
