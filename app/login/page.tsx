@@ -59,22 +59,22 @@ const handleSubmit = async (e: React.FormEvent) => {
         const data = await response.json();
 
         if (response.ok) {
-          // Store token AND user data from the login response
+          
           localStorage.setItem('token', data.token);
           
-          // Store user data if available in the response
+          
           if (data.data && data.data.user) {
             localStorage.setItem('user', JSON.stringify(data.data.user));
           } else {
-            // If user data is not in the expected format, create a basic user object
+            
             const basicUser = {
-              userName: formData.email.split('@')[0], // Use email prefix as username
+              userName: formData.email.split('@')[0], 
               email: formData.email
             };
             localStorage.setItem('user', JSON.stringify(basicUser));
           }
           
-          // Redirect to dashboard
+          
           window.location.href = '/dashboard';
         } else {
           setErrors({ submit: data.message || 'Invalid credentials' });

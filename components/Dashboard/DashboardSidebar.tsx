@@ -1,4 +1,4 @@
-// components/Dashboard/DashboardSidebar.tsx
+// components/Dashboard/DashboardSidebar.tsx - FIXED VERSION
 "use client";
 import { useState } from "react";
 
@@ -24,13 +24,12 @@ export default function DashboardSidebar({
   collapsed = false,
 }: DashboardSidebarProps) {
   const menuItems = [
-    { id: "overview", label: "Overview", icon: "" },
-    { id: "chatbot", label: "AI Chat Bot", icon: "" },
-    { id: "quiz", label: "Take Quiz", icon: "" },
-    { id: "chatroom", label: "Chat Room", icon: "" },
-    { id: "leaderboard", label: "Leaderboard", icon: "" },
-    { id: "profile", label: "Profile", icon: "" },
-    // { id: "settings", label: "Settings", icon: "" },
+    { id: "overview", label: "Overview", icon: "📊" },
+    { id: "chatbot", label: "AI Chat Bot", icon: "🤖" },
+    { id: "quiz", label: "Take Quiz", icon: "🎯" },
+    { id: "chatroom", label: "Chat Room", icon: "💬" },
+    { id: "leaderboard", label: "Leaderboard", icon: "🏆" },
+    { id: "profile", label: "Profile", icon: "👤" },
   ];
 
   if (hideGeneralSidebar) {
@@ -41,18 +40,19 @@ export default function DashboardSidebar({
 
   return (
     <>
-      {/* Mobile overlay */}
+      {/* Mobile overlay - FIXED: Changed lg:hidden to md:hidden */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden" // CHANGED: lg:hidden → md:hidden
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar - FIXED: Changed all lg: to md: for medium screens */}
       <div
         className={`
-        fixed inset-y-0 left-0 z-30 bg-white shadow-xl transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
+        fixed inset-y-0 left-0 z-30 bg-white shadow-xl transform transition-all duration-300 ease-in-out 
+        md:translate-x-0 md:static md:inset-0 // CHANGED: lg: → md:
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         ${sidebarWidth}
       `}
@@ -77,7 +77,7 @@ export default function DashboardSidebar({
             {!collapsed && (
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="lg:hidden p-2 rounded-lg hover:bg-gray-100"
+                className="md:hidden p-2 rounded-lg hover:bg-gray-100" // CHANGED: lg:hidden → md:hidden
               >
                 <svg
                   className="w-5 h-5"
