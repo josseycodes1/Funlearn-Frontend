@@ -113,7 +113,7 @@ export default function Profile({ user }: ProfileProps) {
       name: rank.name,
       description: `Reach ${rank.threshold} points to unlock`,
       icon: rank.icon,
-      earned: currentRankInfo ? currentRankInfo.level >= index + 2 : false, // +2 because level 1 is "Beginner" in rankInfo but not in backend
+      earned: currentRankInfo ? currentRankInfo.level >= index + 1 : false,
       level: index + 1,
       scoreRequired: rank.threshold
     }));
@@ -127,26 +127,29 @@ export default function Profile({ user }: ProfileProps) {
     setIsSaving(true);
     try {
       const token = localStorage.getItem("token");
-      const formData = new FormData();
       
-      // Append profile data - only send fields that are defined
-      if (editData.bio !== undefined) formData.append("bio", editData.bio);
-      if (editData.school !== undefined) formData.append("school", editData.school);
-      if (editData.level !== undefined) formData.append("level", editData.level);
-      if (editData.userName !== undefined) formData.append("userName", editData.userName);
+      // Create a clean payload with only the fields we want to update
+      const payload: any = {};
+      
+      // Only include fields that are defined and not rank-related
+      if (editData.bio !== undefined) payload.bio = editData.bio;
+      if (editData.school !== undefined) payload.school = editData.school;
+      if (editData.level !== undefined) payload.level = editData.level;
+      if (editData.userName !== undefined) payload.userName = editData.userName;
       if (editData.interests !== undefined) {
         const interestsArray = Array.isArray(editData.interests) 
           ? editData.interests 
           : [editData.interests].filter(Boolean);
-        formData.append("interests", JSON.stringify(interestsArray));
+        payload.interests = interestsArray;
       }
 
       const response = await fetch(`${BACKEND_URL}/api/users/profile`, {
         method: "PATCH",
         headers: {
-          Authorization: `Bearer ${token}`,
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-        body: formData,
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
@@ -606,7 +609,7 @@ export default function Profile({ user }: ProfileProps) {
                       </p>
                     </div>
                     <div className="text-4xl">
-                      {rankInfo.level > 1 ? backendRanks[rankInfo.level - 2]?.icon : "🌱"}
+                      {rankInfo.level > 0 ? backendRanks[rankInfo.level - 1]?.icon : "🌱"}
                     </div>
                   </div>
                 </div>
