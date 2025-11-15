@@ -17,63 +17,16 @@ interface UserProfile {
     publicId: string;
     url: string;
   };
-  overallScore?: number;
-  rank?: string;
-}
-
-interface RankInfo {
-  level: number;
-  title: string;
-  desc: string;
-  nextLevelMin: number | null;
-  progress: number;
-}
-
-interface RankAchievement {
-  id: number;
-  name: string;
-  description: string;
-  icon: string;
-  earned: boolean;
-  level: number;
-  scoreRequired: number;
 }
 
 export default function Profile({ user }: ProfileProps) {
-  const [activeTab, setActiveTab] = useState<"profile" | "achievements">("profile");
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
   const [editData, setEditData] = useState<UserProfile | null>(null);
-  const [rankInfo, setRankInfo] = useState<RankInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [rankAchievements, setRankAchievements] = useState<RankAchievement[]>([]);
 
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
-
-  // Rank data that matches your backend EXACTLY - NO "Beginner"
-  const backendRanks = [
-    { name: "Brain Sprout 🌱", icon: "🌱", threshold: 0 },
-    { name: "Curious Thinker 🔍", icon: "🔍", threshold: 20 },
-    { name: "Knowledge Explorer 🧭", icon: "🧭", threshold: 50 },
-    { name: "Idea Spark 💡", icon: "💡", threshold: 90 },
-    { name: "Mind Mover 🌀", icon: "🌀", threshold: 140 },
-    { name: "Quiz Challenger 🎯", icon: "🎯", threshold: 200 },
-    { name: "Concept Crusher 💥", icon: "💥", threshold: 270 },
-    { name: "Sharp Scholar 📘", icon: "📘", threshold: 350 },
-    { name: "Logic Builder 🧩", icon: "🧩", threshold: 440 },
-    { name: "Insight Seeker 🔮", icon: "🔮", threshold: 540 },
-    { name: "Wisdom Warrior ⚔️", icon: "⚔️", threshold: 650 },
-    { name: "Genius Guru 🧙‍♂️", icon: "🧙‍♂️", threshold: 770 },
-    { name: "Study Strategist 🧠", icon: "🧠", threshold: 900 },
-    { name: "Mind Master 👑", icon: "👑", threshold: 1040 },
-    { name: "Genius Grove 🌳", icon: "🌳", threshold: 1190 },
-    { name: "Brainstorm Pro ☁️", icon: "☁️", threshold: 1350 },
-    { name: "Knowledge Commander 🚀", icon: "🚀", threshold: 1520 },
-    { name: "Elite Intellect 🏆", icon: "🏆", threshold: 1700 },
-    { name: "Legendary Luminary 🌟", icon: "🌟", threshold: 1890 },
-    { name: "Sync Sage 🔱", icon: "🔱", threshold: 2090 }
-  ];
 
   // Fetch user profile data
   useEffect(() => {
@@ -94,8 +47,6 @@ export default function Profile({ user }: ProfileProps) {
         if (data.success) {
           setProfileData(data.user);
           setEditData(data.user);
-          setRankInfo(data.rankInfo);
-          generateRankAchievements(data.rankInfo);
         }
       } else {
         console.error("Failed to fetch user profile:", response.status);
@@ -105,20 +56,6 @@ export default function Profile({ user }: ProfileProps) {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const generateRankAchievements = (currentRankInfo: RankInfo | null) => {
-    const achievements: RankAchievement[] = backendRanks.map((rank, index) => ({
-      id: index + 1,
-      name: rank.name,
-      description: `Reach ${rank.threshold} points to unlock`,
-      icon: rank.icon,
-      earned: currentRankInfo ? currentRankInfo.level >= index + 1 : false,
-      level: index + 1,
-      scoreRequired: rank.threshold
-    }));
-
-    setRankAchievements(achievements);
   };
 
   const handleSave = async () => {
@@ -131,7 +68,7 @@ export default function Profile({ user }: ProfileProps) {
       // Create a clean payload with only the fields we want to update
       const payload: any = {};
       
-      // Only include fields that are defined and not rank-related
+      // Only include fields that are defined
       if (editData.bio !== undefined) payload.bio = editData.bio;
       if (editData.school !== undefined) payload.school = editData.school;
       if (editData.level !== undefined) payload.level = editData.level;
@@ -314,13 +251,6 @@ export default function Profile({ user }: ProfileProps) {
             <p className="text-gray-500 text-sm mt-2">
               {profileData.bio || "No bio yet"}
             </p>
-            {rankInfo && (
-              <div className="mt-2">
-                <span className="inline-flex items-center px-3 py-1 bg-funlearn2 text-funlearn8 rounded-full text-sm font-medium">
-                  {rankInfo.title} • Level {rankInfo.level}
-                </span>
-              </div>
-            )}
           </div>
           <button
             onClick={() => isEditing ? handleCancel() : setIsEditing(true)}
@@ -338,325 +268,203 @@ export default function Profile({ user }: ProfileProps) {
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
-        <div className="border-b border-gray-200">
-          <nav className="flex space-x-8 px-6">
-            {[
-              { id: "profile", label: "Profile Info", icon: "👤" },
-              { id: "achievements", label: "Rank Progress", icon: "🏆" },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 ${
-                  activeTab === tab.id
-                    ? "border-funlearn6 text-funlearn7"
-                    : "border-transparent text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
-              </button>
-            ))}
-          </nav>
-        </div>
-
-        <div className="p-6">
-          {activeTab === "profile" && (
-            <div className="space-y-6">
-              {isEditing ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Username
-                    </label>
-                    <input
-                      type="text"
-                      value={editData?.userName || ""}
-                      onChange={(e) =>
-                        setEditData(prev => prev ? {
-                          ...prev,
-                          userName: e.target.value
-                        } : null)
-                      }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent text-black"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      value={editData?.email || ""}
-                      onChange={(e) =>
-                        setEditData(prev => prev ? {
-                          ...prev,
-                          email: e.target.value
-                        } : null)
-                      }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent text-black"
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Bio
-                    </label>
-                    <textarea
-                      value={editData?.bio || ""}
-                      onChange={(e) =>
-                        setEditData(prev => prev ? {
-                          ...prev,
-                          bio: e.target.value
-                        } : null)
-                      }
-                      rows={3}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent text-black"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      School
-                    </label>
-                    <input
-                      type="text"
-                      value={editData?.school || ""}
-                      onChange={(e) =>
-                        setEditData(prev => prev ? {
-                          ...prev,
-                          school: e.target.value
-                        } : null)
-                      }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent text-black"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Grade Level
-                    </label>
-                    <select
-                      value={editData?.level || ""}
-                      onChange={(e) =>
-                        setEditData(prev => prev ? {
-                          ...prev,
-                          level: e.target.value
-                        } : null)
-                      }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent text-black"
-                    >
-                      <option value="">Select Grade Level</option>
-                      <option>Elementary</option>
-                      <option>Middle School</option>
-                      <option>High School</option>
-                      <option>College</option>
-                      <option>Graduate</option>
-                    </select>
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Interests
-                    </label>
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      {(editData?.interests || []).map((interest) => (
-                        <span
-                          key={interest}
-                          className="inline-flex items-center px-3 py-1 bg-funlearn2 text-funlearn8 rounded-full text-sm"
-                        >
-                          {interest}
-                          <button
-                            onClick={() => removeInterest(interest)}
-                            className="ml-2 text-funlearn7 hover:text-funlearn8"
-                          >
-                            ×
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                    <div className="flex space-x-2">
-                      <input
-                        type="text"
-                        placeholder="Add an interest..."
-                        onKeyPress={(e) => {
-                          if (e.key === "Enter") {
-                            addInterest((e.target as HTMLInputElement).value);
-                            (e.target as HTMLInputElement).value = "";
-                          }
-                        }}
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent text-black"
-                      />
-                      <button
-                        onClick={() => {
-                          const input = document.querySelector(
-                            'input[placeholder="Add an interest..."]'
-                          ) as HTMLInputElement;
-                          if (input) {
-                            addInterest(input.value);
-                            input.value = "";
-                          }
-                        }}
-                        className="px-4 py-2 bg-funlearn6 text-white rounded-lg hover:bg-funlearn7 transition-colors"
-                      >
-                        Add
-                      </button>
-                    </div>
-                  </div>
-                  <div className="md:col-span-2">
-                    <button
-                      onClick={handleSave}
-                      disabled={isSaving}
-                      className="bg-funlearn6 text-white px-6 py-3 rounded-lg font-semibold hover:bg-funlearn7 transition-colors disabled:opacity-50"
-                    >
-                      {isSaving ? "Saving..." : "Save Changes"}
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Username
-                    </label>
-                    <p className="text-gray-900">{profileData.userName}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email
-                    </label>
-                    <p className="text-gray-900">{profileData.email}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      School
-                    </label>
-                    <p className="text-gray-900">{profileData.school || "Not specified"}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Grade Level
-                    </label>
-                    <p className="text-gray-900">{profileData.level || "Not specified"}</p>
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Bio
-                    </label>
-                    <p className="text-gray-900">{profileData.bio || "No bio yet"}</p>
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Interests
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                      {(profileData.interests || []).map((interest) => (
-                        <span
-                          key={interest}
-                          className="inline-flex items-center px-3 py-1 bg-funlearn2 text-funlearn8 rounded-full text-sm"
-                        >
-                          {interest}
-                        </span>
-                      ))}
-                      {(profileData.interests || []).length === 0 && (
-                        <p className="text-gray-500 text-sm">No interests added yet</p>
-                      )}
-                    </div>
-                  </div>
-                  {rankInfo && (
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Current Rank Progress
-                      </label>
-                      <div className="bg-gray-100 rounded-lg p-4">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="font-medium text-gray-900">{rankInfo.title}</span>
-                          <span className="text-sm text-gray-600">Level {rankInfo.level}</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div
-                            className="bg-funlearn6 h-2 rounded-full transition-all duration-300"
-                            style={{ width: `${rankInfo.progress}%` }}
-                          ></div>
-                        </div>
-                        <p className="text-xs text-gray-600 mt-2">
-                          {rankInfo.desc}
-                        </p>
-                        {rankInfo.nextLevelMin && (
-                          <p className="text-xs text-gray-500 mt-1">
-                            {rankInfo.progress}% to next level ({rankInfo.nextLevelMin} points)
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-
-          {activeTab === "achievements" && (
-            <div className="space-y-6">
-              {/* Current Rank Overview */}
-              {rankInfo && (
-                <div className="bg-funlearn2 rounded-xl p-6 border border-funlearn4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-xl font-bold text-funlearn8 mb-2">
-                        Your Current Rank: {rankInfo.title}
-                      </h3>
-                      <p className="text-funlearn7">{rankInfo.desc}</p>
-                      <p className="text-sm text-funlearn8 mt-2">
-                        Level {rankInfo.level} • {rankInfo.progress}% to next rank
-                      </p>
-                    </div>
-                    <div className="text-4xl">
-                      {rankInfo.level > 0 ? backendRanks[rankInfo.level - 1]?.icon : "🌱"}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* All Ranks */}
+      {/* Profile Content */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="space-y-6">
+          {isEditing ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">All Ranks</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {rankAchievements.map((achievement) => (
-                    <div
-                      key={achievement.id}
-                      className={`p-4 rounded-lg border-2 transition-all ${
-                        achievement.earned
-                          ? "bg-funlearn1 border-funlearn4"
-                          : achievement.level === (rankInfo?.level || 0)
-                          ? "bg-yellow-50 border-yellow-200"
-                          : "bg-gray-50 border-gray-200 opacity-60"
-                      }`}
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Username
+                </label>
+                <input
+                  type="text"
+                  value={editData?.userName || ""}
+                  onChange={(e) =>
+                    setEditData(prev => prev ? {
+                      ...prev,
+                      userName: e.target.value
+                    } : null)
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent text-black"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={editData?.email || ""}
+                  onChange={(e) =>
+                    setEditData(prev => prev ? {
+                      ...prev,
+                      email: e.target.value
+                    } : null)
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent text-black"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Bio
+                </label>
+                <textarea
+                  value={editData?.bio || ""}
+                  onChange={(e) =>
+                    setEditData(prev => prev ? {
+                      ...prev,
+                      bio: e.target.value
+                    } : null)
+                  }
+                  rows={3}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent text-black"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  School
+                </label>
+                <input
+                  type="text"
+                  value={editData?.school || ""}
+                  onChange={(e) =>
+                    setEditData(prev => prev ? {
+                      ...prev,
+                      school: e.target.value
+                    } : null)
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent text-black"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Grade Level
+                </label>
+                <select
+                  value={editData?.level || ""}
+                  onChange={(e) =>
+                    setEditData(prev => prev ? {
+                      ...prev,
+                      level: e.target.value
+                    } : null)
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent text-black"
+                >
+                  <option value="">Select Grade Level</option>
+                  <option>Elementary</option>
+                  <option>Middle School</option>
+                  <option>High School</option>
+                  <option>College</option>
+                  <option>Graduate</option>
+                </select>
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Interests
+                </label>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {(editData?.interests || []).map((interest) => (
+                    <span
+                      key={interest}
+                      className="inline-flex items-center px-3 py-1 bg-funlearn2 text-funlearn8 rounded-full text-sm"
                     >
-                      <div className="flex items-center space-x-3 mb-3">
-                        <span className="text-2xl">{achievement.icon}</span>
-                        <div>
-                          <h3 className="font-semibold text-gray-900">
-                            {achievement.name}
-                          </h3>
-                          <p className="text-sm text-gray-600">
-                            Level {achievement.level}
-                          </p>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {achievement.scoreRequired} points
-                          </p>
-                        </div>
-                      </div>
-                      {achievement.earned ? (
-                        <div className="text-sm text-funlearn7 font-medium">
-                          ✓ Achieved
-                        </div>
-                      ) : achievement.level === (rankInfo?.level || 0) ? (
-                        <div className="text-sm text-yellow-700 font-medium">
-                          🔥 Next Goal
-                        </div>
-                      ) : (
-                        <div className="text-sm text-gray-500">Locked</div>
-                      )}
-                    </div>
+                      {interest}
+                      <button
+                        onClick={() => removeInterest(interest)}
+                        className="ml-2 text-funlearn7 hover:text-funlearn8"
+                      >
+                        ×
+                      </button>
+                    </span>
                   ))}
+                </div>
+                <div className="flex space-x-2">
+                  <input
+                    type="text"
+                    placeholder="Add an interest..."
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter") {
+                        addInterest((e.target as HTMLInputElement).value);
+                        (e.target as HTMLInputElement).value = "";
+                      }
+                    }}
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn6 focus:border-transparent text-black"
+                  />
+                  <button
+                    onClick={() => {
+                      const input = document.querySelector(
+                        'input[placeholder="Add an interest..."]'
+                      ) as HTMLInputElement;
+                      if (input) {
+                        addInterest(input.value);
+                        input.value = "";
+                      }
+                    }}
+                    className="px-4 py-2 bg-funlearn6 text-white rounded-lg hover:bg-funlearn7 transition-colors"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+              <div className="md:col-span-2">
+                <button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  className="bg-funlearn6 text-white px-6 py-3 rounded-lg font-semibold hover:bg-funlearn7 transition-colors disabled:opacity-50"
+                >
+                  {isSaving ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Username
+                </label>
+                <p className="text-gray-900">{profileData.userName}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email
+                </label>
+                <p className="text-gray-900">{profileData.email}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  School
+                </label>
+                <p className="text-gray-900">{profileData.school || "Not specified"}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Grade Level
+                </label>
+                <p className="text-gray-900">{profileData.level || "Not specified"}</p>
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Bio
+                </label>
+                <p className="text-gray-900">{profileData.bio || "No bio yet"}</p>
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Interests
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {(profileData.interests || []).map((interest) => (
+                    <span
+                      key={interest}
+                      className="inline-flex items-center px-3 py-1 bg-funlearn2 text-funlearn8 rounded-full text-sm"
+                    >
+                      {interest}
+                    </span>
+                  ))}
+                  {(profileData.interests || []).length === 0 && (
+                    <p className="text-gray-500 text-sm">No interests added yet</p>
+                  )}
                 </div>
               </div>
             </div>
