@@ -18,6 +18,7 @@ interface UserProfile {
     url: string;
   };
   overallScore?: number;
+  rank?: string; 
 }
 
 interface RankInfo {
@@ -50,10 +51,19 @@ export default function Profile({ user }: ProfileProps) {
 
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
-  // Rank icons mapping
+  // Rank icons mapping - matches your backend enum (starting from Brain Sprout)
   const rankIcons = [
     "🌱", "🔍", "🧭", "💡", "🌀", "🎯", "💥", "📘", "🧩", "🔮",
     "⚔️", "🧙‍♂️", "🧠", "👑", "🌳", "☁️", "🚀", "🏆", "🌟", "🔱"
+  ];
+
+  // Rank names that match your backend enum
+  const backendRankNames = [
+    "Brain Sprout 🌱", "Curious Thinker 🔍", "Knowledge Explorer 🧭", "Idea Spark 💡",
+    "Mind Mover 🌀", "Quiz Challenger 🎯", "Concept Crusher 💥", "Sharp Scholar 📘",
+    "Logic Builder 🧩", "Insight Seeker 🔮", "Wisdom Warrior ⚔️", "Genius Guru 🧙‍♂️",
+    "Study Strategist 🧠", "Mind Master 👑", "Genius Grove 🌳", "Brainstorm Pro ☁️",
+    "Knowledge Commander 🚀", "Elite Intellect 🏆", "Legendary Luminary 🌟", "Sync Sage 🔱"
   ];
 
   // Fetch user profile data
@@ -74,7 +84,7 @@ export default function Profile({ user }: ProfileProps) {
         const data = await response.json();
         if (data.success) {
           setProfileData(data.user);
-          setEditData(data.user); // Initialize edit data with current profile
+          setEditData(data.user);
           setRankInfo(data.rankInfo);
           generateRankAchievements(data.rankInfo);
         }
@@ -94,18 +104,15 @@ export default function Profile({ user }: ProfileProps) {
       650, 770, 900, 1040, 1190, 1350, 1520, 1700, 1890, 2090, 2500
     ];
 
+    // Use backend rank names for display, but note that "Beginner" is only in rankInfo, not in user.rank
     const rankNames = [
-      "Beginner", "Brain Sprout", "Curious Thinker", "Knowledge Explorer",
-      "Idea Spark", "Mind Mover", "Quiz Challenger", "Concept Crusher", 
-      "Sharp Scholar", "Logic Builder", "Insight Seeker", "Wisdom Warrior", 
-      "Genius Guru", "Study Strategist", "Mind Master", "Genius Grove",
-      "Brainstorm Pro", "Knowledge Commander", "Elite Intellect", 
-      "Legendary Luminary", "Sync Sage"
+      "Beginner", // This is only used in rankInfo, not stored in user.rank
+      ...backendRankNames // These are the actual enum values stored in user.rank
     ];
 
     const achievements: RankAchievement[] = rankThresholds.map((threshold, index) => ({
       id: index + 1,
-      name: rankNames[index],
+      name: rankNames[index] || `Rank ${index + 1}`,
       description: `Reach ${threshold} points to unlock`,
       icon: rankIcons[index] || "🏆",
       earned: currentRankInfo ? currentRankInfo.level >= index + 1 : false,
@@ -124,13 +131,17 @@ export default function Profile({ user }: ProfileProps) {
       const token = localStorage.getItem("token");
       const formData = new FormData();
       
-      // Append profile data
+      // Append profile data - only send fields that are defined
       if (editData.bio !== undefined) formData.append("bio", editData.bio);
       if (editData.school !== undefined) formData.append("school", editData.school);
       if (editData.level !== undefined) formData.append("level", editData.level);
       if (editData.userName !== undefined) formData.append("userName", editData.userName);
       if (editData.interests !== undefined) {
-        formData.append("interests", JSON.stringify(editData.interests));
+        // Ensure interests is properly formatted as array
+        const interestsArray = Array.isArray(editData.interests) 
+          ? editData.interests 
+          : [editData.interests].filter(Boolean);
+        formData.append("interests", JSON.stringify(interestsArray));
       }
 
       const response = await fetch(`${BACKEND_URL}/api/users/profile`, {
@@ -144,8 +155,10 @@ export default function Profile({ user }: ProfileProps) {
       if (response.ok) {
         const data = await response.json();
         if (data.success) {
-          setProfileData(data.user); // Update the main profile data with saved changes
+          setProfileData(data.user);
           setIsEditing(false);
+          // Refresh to get updated data including rank info
+          await fetchUserProfile();
         }
       } else {
         console.error("Failed to update profile:", response.status);
@@ -161,7 +174,7 @@ export default function Profile({ user }: ProfileProps) {
   };
 
   const handleCancel = () => {
-    setEditData(profileData); // Reset edit data to current profile data
+    setEditData(profileData);
     setIsEditing(false);
   };
 
@@ -190,7 +203,7 @@ export default function Profile({ user }: ProfileProps) {
         if (data.success) {
           setProfileData(data.user);
           setEditData(data.user);
-          await fetchUserProfile(); // Refresh to get updated rank info if score changed
+          await fetchUserProfile();
         }
       } else {
         console.error("Failed to upload profile photo:", response.status);
@@ -596,7 +609,9 @@ export default function Profile({ user }: ProfileProps) {
                         Level {rankInfo.level} • {rankInfo.progress}% to next rank
                       </p>
                     </div>
-                    <div className="text-4xl">{rankIcons[rankInfo.level - 1] || "🏆"}</div>
+                    <div className="text-4xl">
+                      {rankInfo.level > 1 ? rankIcons[rankInfo.level - 2] : "🌱"}
+                    </div>
                   </div>
                 </div>
               )}
