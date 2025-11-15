@@ -18,7 +18,7 @@ interface UserProfile {
     url: string;
   };
   overallScore?: number;
-  rank?: string; 
+  rank?: string;
 }
 
 interface RankInfo {
@@ -51,19 +51,28 @@ export default function Profile({ user }: ProfileProps) {
 
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
-  // Rank icons mapping - matches your backend enum (starting from Brain Sprout)
-  const rankIcons = [
-    "🌱", "🔍", "🧭", "💡", "🌀", "🎯", "💥", "📘", "🧩", "🔮",
-    "⚔️", "🧙‍♂️", "🧠", "👑", "🌳", "☁️", "🚀", "🏆", "🌟", "🔱"
-  ];
-
-  // Rank names that match your backend enum
-  const backendRankNames = [
-    "Brain Sprout 🌱", "Curious Thinker 🔍", "Knowledge Explorer 🧭", "Idea Spark 💡",
-    "Mind Mover 🌀", "Quiz Challenger 🎯", "Concept Crusher 💥", "Sharp Scholar 📘",
-    "Logic Builder 🧩", "Insight Seeker 🔮", "Wisdom Warrior ⚔️", "Genius Guru 🧙‍♂️",
-    "Study Strategist 🧠", "Mind Master 👑", "Genius Grove 🌳", "Brainstorm Pro ☁️",
-    "Knowledge Commander 🚀", "Elite Intellect 🏆", "Legendary Luminary 🌟", "Sync Sage 🔱"
+  // Rank data that matches your backend EXACTLY - NO "Beginner"
+  const backendRanks = [
+    { name: "Brain Sprout 🌱", icon: "🌱", threshold: 0 },
+    { name: "Curious Thinker 🔍", icon: "🔍", threshold: 20 },
+    { name: "Knowledge Explorer 🧭", icon: "🧭", threshold: 50 },
+    { name: "Idea Spark 💡", icon: "💡", threshold: 90 },
+    { name: "Mind Mover 🌀", icon: "🌀", threshold: 140 },
+    { name: "Quiz Challenger 🎯", icon: "🎯", threshold: 200 },
+    { name: "Concept Crusher 💥", icon: "💥", threshold: 270 },
+    { name: "Sharp Scholar 📘", icon: "📘", threshold: 350 },
+    { name: "Logic Builder 🧩", icon: "🧩", threshold: 440 },
+    { name: "Insight Seeker 🔮", icon: "🔮", threshold: 540 },
+    { name: "Wisdom Warrior ⚔️", icon: "⚔️", threshold: 650 },
+    { name: "Genius Guru 🧙‍♂️", icon: "🧙‍♂️", threshold: 770 },
+    { name: "Study Strategist 🧠", icon: "🧠", threshold: 900 },
+    { name: "Mind Master 👑", icon: "👑", threshold: 1040 },
+    { name: "Genius Grove 🌳", icon: "🌳", threshold: 1190 },
+    { name: "Brainstorm Pro ☁️", icon: "☁️", threshold: 1350 },
+    { name: "Knowledge Commander 🚀", icon: "🚀", threshold: 1520 },
+    { name: "Elite Intellect 🏆", icon: "🏆", threshold: 1700 },
+    { name: "Legendary Luminary 🌟", icon: "🌟", threshold: 1890 },
+    { name: "Sync Sage 🔱", icon: "🔱", threshold: 2090 }
   ];
 
   // Fetch user profile data
@@ -99,25 +108,14 @@ export default function Profile({ user }: ProfileProps) {
   };
 
   const generateRankAchievements = (currentRankInfo: RankInfo | null) => {
-    const rankThresholds = [
-      0, 20, 50, 90, 140, 200, 270, 350, 440, 540,
-      650, 770, 900, 1040, 1190, 1350, 1520, 1700, 1890, 2090, 2500
-    ];
-
-    // Use backend rank names for display, but note that "Beginner" is only in rankInfo, not in user.rank
-    const rankNames = [
-      "Beginner", // This is only used in rankInfo, not stored in user.rank
-      ...backendRankNames // These are the actual enum values stored in user.rank
-    ];
-
-    const achievements: RankAchievement[] = rankThresholds.map((threshold, index) => ({
+    const achievements: RankAchievement[] = backendRanks.map((rank, index) => ({
       id: index + 1,
-      name: rankNames[index] || `Rank ${index + 1}`,
-      description: `Reach ${threshold} points to unlock`,
-      icon: rankIcons[index] || "🏆",
-      earned: currentRankInfo ? currentRankInfo.level >= index + 1 : false,
+      name: rank.name,
+      description: `Reach ${rank.threshold} points to unlock`,
+      icon: rank.icon,
+      earned: currentRankInfo ? currentRankInfo.level >= index + 2 : false, // +2 because level 1 is "Beginner" in rankInfo but not in backend
       level: index + 1,
-      scoreRequired: threshold
+      scoreRequired: rank.threshold
     }));
 
     setRankAchievements(achievements);
@@ -137,7 +135,6 @@ export default function Profile({ user }: ProfileProps) {
       if (editData.level !== undefined) formData.append("level", editData.level);
       if (editData.userName !== undefined) formData.append("userName", editData.userName);
       if (editData.interests !== undefined) {
-        // Ensure interests is properly formatted as array
         const interestsArray = Array.isArray(editData.interests) 
           ? editData.interests 
           : [editData.interests].filter(Boolean);
@@ -157,7 +154,6 @@ export default function Profile({ user }: ProfileProps) {
         if (data.success) {
           setProfileData(data.user);
           setIsEditing(false);
-          // Refresh to get updated data including rank info
           await fetchUserProfile();
         }
       } else {
@@ -260,7 +256,7 @@ export default function Profile({ user }: ProfileProps) {
 
   return (
     <div className="max-w-4xl mx-auto">
-      {/* Header - Always shows saved profile data, not edit data */}
+      {/* Header */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
         <div className="flex items-center space-x-6">
           <div className="relative">
@@ -610,7 +606,7 @@ export default function Profile({ user }: ProfileProps) {
                       </p>
                     </div>
                     <div className="text-4xl">
-                      {rankInfo.level > 1 ? rankIcons[rankInfo.level - 2] : "🌱"}
+                      {rankInfo.level > 1 ? backendRanks[rankInfo.level - 2]?.icon : "🌱"}
                     </div>
                   </div>
                 </div>
@@ -626,7 +622,7 @@ export default function Profile({ user }: ProfileProps) {
                       className={`p-4 rounded-lg border-2 transition-all ${
                         achievement.earned
                           ? "bg-funlearn1 border-funlearn4"
-                          : achievement.level === (rankInfo?.level || 0) + 1
+                          : achievement.level === (rankInfo?.level || 0)
                           ? "bg-yellow-50 border-yellow-200"
                           : "bg-gray-50 border-gray-200 opacity-60"
                       }`}
@@ -649,7 +645,7 @@ export default function Profile({ user }: ProfileProps) {
                         <div className="text-sm text-funlearn7 font-medium">
                           ✓ Achieved
                         </div>
-                      ) : achievement.level === (rankInfo?.level || 0) + 1 ? (
+                      ) : achievement.level === (rankInfo?.level || 0) ? (
                         <div className="text-sm text-yellow-700 font-medium">
                           🔥 Next Goal
                         </div>
