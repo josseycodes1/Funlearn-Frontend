@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-outfit);
+  
+  /* Funlearn color palette - lilac theme */
+  --color-funlearn1: #F5F3FF;  /* Lightest lilac */
+  --color-funlearn2: #EDE9FE;  /* Very light lilac */
+  --color-funlearn3: #DDD6FE;  /* Light lilac */
+  --color-funlearn4: #C4B5FD;  /* Soft lilac */
+  --color-funlearn5: #A78BFA;  /* Medium lilac */
+  --color-funlearn6: #8B5CF6;  /* Primary lilac */
+  --color-funlearn7: #7C3AED;  /* Dark lilac */
+  --color-funlearn8: #6D28D9;  /* Darker lilac */
+  --color-funlearn9: #5B21B6;  /* Darkest lilac */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
