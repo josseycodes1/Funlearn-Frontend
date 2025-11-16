@@ -130,21 +130,21 @@ export default function DashboardOverview() {
             description="Test your knowledge with fun quizzes"
             icon="🎯"
             color="bg-funlearn2"
-            onClick={() => (window.location.href = "/dashboard?tab=quiz")}
+            onClick={() => (window.location.href = "/dashboard/quizpage")}
           />
           <QuickAction
             title="Ask AI Tutor"
             description="Get help from our AI learning assistant"
             icon="🤖"
             color="bg-blue-100"
-            onClick={() => (window.location.href = "/dashboard?tab=chatbot")}
+            onClick={() => (window.location.href = "/dashboard/chatbot")}
           />
           <QuickAction
             title="Join Chat Room"
             description="Collaborate with other students"
             icon="💬"
             color="bg-green-100"
-            onClick={() => (window.location.href = "/dashboard?tab=chatroom")}
+            onClick={() => (window.location.href = "/dashboard/chatroom")}
           />
         </div>
       </div>
