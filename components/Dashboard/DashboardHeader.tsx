@@ -1,4 +1,3 @@
-// components/Dashboard/DashboardHeader.tsx
 "use client";
 import { useSidebar } from "@/contexts/SidebarContext";
 

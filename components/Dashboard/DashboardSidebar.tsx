@@ -1,6 +1,6 @@
-// components/Dashboard/DashboardSidebar.tsx - FIXED VERSION
 "use client";
 import { useState } from "react";
+import Link from 'next/link';
 
 interface DashboardSidebarProps {
   activeTab: string;
@@ -40,15 +40,15 @@ export default function DashboardSidebar({
 
   return (
     <>
-      {/* Mobile overlay - FIXED: Changed lg:hidden to md:hidden */}
+      {/* Mobile overlay*/}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden" // CHANGED: lg:hidden → md:hidden
+          className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden" 
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* Sidebar - FIXED: Changed all lg: to md: for medium screens */}
+      {/* Sidebar */}
       <div
         className={`
         fixed inset-y-0 left-0 z-30 bg-white shadow-xl transform transition-all duration-300 ease-in-out 
@@ -69,9 +69,11 @@ export default function DashboardSidebar({
                 <span className="text-white font-bold text-lg">F</span>
               </div>
               {!collapsed && (
-                <span className="text-xl font-bold text-gray-900">
-                  Funlearn
-                </span>
+                <Link href="/">
+                    <span className="text-xl font-bold text-gray-900 cursor-pointer hover:text-funlearn6 transition-colors">
+                      Funlearn
+                    </span>
+                  </Link>
               )}
             </div>
             {!collapsed && (
