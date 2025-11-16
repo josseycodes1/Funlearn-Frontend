@@ -1,4 +1,4 @@
-
+// components/Dashboard/ChatBot.tsx
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { useSidebar } from "@/contexts/SidebarContext";
@@ -195,10 +195,10 @@ export default function ChatBotPage() {
     e.preventDefault();
     if ((!inputMessage.trim() && !uploadedFile) || isLoading) return;
 
-    const currentInput = inputMessage;
+    const currentInput = inputMessage.trim();
     const currentFile = uploadedFile;
 
-    // Create a SINGLE combined message for display
+    // Create display message for UI
     let displayContent = "";
     if (currentFile && currentInput) {
       displayContent = `${currentInput}\n\n[Attached: ${uploadedFileName}]`;
@@ -224,44 +224,54 @@ export default function ChatBotPage() {
     try {
       const token = localStorage.getItem("token");
       let extractedText = "";
-      let fileText = "";
 
       // Extract text from PDF if file is present
       if (currentFile) {
-        extractedText = await extractTextFromPDF(currentFile);
-        fileText = extractedText;
+        try {
+          extractedText = await extractTextFromPDF(currentFile);
+          if (!extractedText) {
+            throw new Error("No text could be extracted from the PDF");
+          }
+        } catch (error) {
+          console.error("PDF extraction error:", error);
+          const errorMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            role: "assistant",
+            content:
+              "Sorry, I couldn't read that PDF file. Please try another file or check if the PDF contains text.",
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, errorMessage]);
+          setIsLoading(false);
+          return;
+        }
       }
 
       // Determine action type
       const action = detectAction(currentInput, !!currentFile);
 
-      // Construct payload
+      // Construct payload according to your specification
       const payload: any = {
         action: action,
       };
 
-      // Add file text and message based on the scenario
-      if (currentFile && currentInput) {
-        // Both file and message: keep them separate in payload
-        payload.fileText = fileText;
-        payload.message = currentInput;
-      } else if (currentFile && !currentInput) {
-        // File only: use extracted text as message
-        payload.message = fileText;
-      } else {
-        // Message only
+      // Add fileText only if file is present
+      if (currentFile) {
+        payload.fileText = extractedText;
+      }
+
+      // Add message only if user typed something
+      if (currentInput) {
         payload.message = currentInput;
       }
 
+      // Include chatId if it exists
       if (currentChatId) {
         payload.chatId = currentChatId;
       }
 
       console.log("Sending request to:", `${BACKEND_URL}/api/ai/chat`);
-      console.log("Payload:", {
-        ...payload,
-        fileText: fileText ? "[EXTRACTED_TEXT]" : null,
-      });
+      console.log("Final payload:", payload);
 
       const response = await fetch(`${BACKEND_URL}/api/ai/chat`, {
         method: "POST",
