@@ -167,7 +167,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           disabled={isLoading}
           className="w-full bg-funlearn6 text-white py-3 px-4 rounded-lg font-semibold hover:bg-funlearn7 focus:ring-2 focus:ring-funlearn6 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isLoading ? 'Signing In...' : 'Sign In'}
+          {isLoading ? 'Logging In...' : 'Log In'}
         </button>
 
         <div className="text-center">
