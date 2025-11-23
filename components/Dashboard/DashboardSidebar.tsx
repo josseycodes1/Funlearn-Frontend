@@ -24,12 +24,12 @@ export default function DashboardSidebar({
   collapsed = false,
 }: DashboardSidebarProps) {
   const menuItems = [
-    { id: "overview", label: "Overview", icon: "📊" },
-    { id: "chatbot", label: "AI Chat Bot", icon: "🤖" },
-    { id: "quiz", label: "Take Quiz", icon: "🎯" },
-    { id: "chatroom", label: "Chat Room", icon: "💬" },
-    { id: "leaderboard", label: "Leaderboard", icon: "🏆" },
-    { id: "profile", label: "Profile", icon: "👤" },
+    { id: "overview", label: "Overview", icon: "◼️" },
+    { id: "chatbot", label: "AI Chat Bot", icon: "⚫" },
+    { id: "quiz", label: "Take Quiz", icon: "🎱" },
+    { id: "chatroom", label: "Chat Room", icon: "⚪" },
+    { id: "leaderboard", label: "Leaderboard", icon: "⬜" },
+    { id: "profile", label: "Profile", icon: "⬛" },
   ];
 
   if (hideGeneralSidebar) {
@@ -154,7 +154,7 @@ export default function DashboardSidebar({
               } py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors`}
               title={collapsed ? "Logout" : ""}
             >
-              <span className="text-lg">🚪</span>
+              <span className="text-lg">◼️</span>
               {!collapsed && <span className="font-medium">Logout</span>}
             </button>
           </div>
