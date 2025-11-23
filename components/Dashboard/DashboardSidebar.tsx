@@ -24,12 +24,12 @@ export default function DashboardSidebar({
   collapsed = false,
 }: DashboardSidebarProps) {
   const menuItems = [
-    { id: "overview", label: "Overview", icon: "◼️" },
-    { id: "chatbot", label: "AI Chat Bot", icon: "⚫" },
-    { id: "quiz", label: "Take Quiz", icon: "🎱" },
-    { id: "chatroom", label: "Chat Room", icon: "⚪" },
-    { id: "leaderboard", label: "Leaderboard", icon: "⬜" },
-    { id: "profile", label: "Profile", icon: "⬛" },
+    { id: "overview", label: "Overview", icon: "📊" },
+    { id: "chatbot", label: "AI Chat Bot", icon: "🤖" },
+    { id: "quiz", label: "Take Quiz", icon: "🎯" },
+    { id: "chatroom", label: "Chat Room", icon: "💬" },
+    { id: "leaderboard", label: "Leaderboard", icon: "🏆" },
+    { id: "profile", label: "Profile", icon: "👤" },
   ];
 
   if (hideGeneralSidebar) {
@@ -52,7 +52,7 @@ export default function DashboardSidebar({
       <div
         className={`
         fixed inset-y-0 left-0 z-30 bg-white shadow-xl transform transition-all duration-300 ease-in-out 
-        md:translate-x-0 md:static md:inset-0
+        md:translate-x-0 md:static md:inset-0 // CHANGED: lg: → md:
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         ${sidebarWidth}
       `}
@@ -65,12 +65,12 @@ export default function DashboardSidebar({
             } border-b border-gray-200`}
           >
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-funlearn8 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">F</span>
               </div>
               {!collapsed && (
                 <Link href="/">
-                    <span className="text-xl font-bold text-gray-900 cursor-pointer hover:text-gray-600 transition-colors">
+                    <span className="text-xl font-bold text-gray-900 cursor-pointer hover:text-funlearn6 transition-colors">
                       Funlearn
                     </span>
                   </Link>
@@ -79,7 +79,7 @@ export default function DashboardSidebar({
             {!collapsed && (
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="md:hidden p-2 rounded-lg hover:bg-gray-100"
+                className="md:hidden p-2 rounded-lg hover:bg-gray-100" // CHANGED: lg:hidden → md:hidden
               >
                 <svg
                   className="w-5 h-5"
@@ -102,8 +102,8 @@ export default function DashboardSidebar({
           {!collapsed && (
             <div className="p-4 border-b border-gray-200">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                  <span className="text-gray-800 font-semibold">
+                <div className="w-10 h-10 bg-funlearn4 rounded-full flex items-center justify-center">
+                  <span className="text-funlearn8 font-semibold">
                     {user?.userName?.charAt(0).toUpperCase() || "U"}
                   </span>
                 </div>
@@ -132,8 +132,8 @@ export default function DashboardSidebar({
                   collapsed ? "justify-center px-3" : "space-x-3 px-4"
                 } py-3 rounded-lg transition-colors ${
                   activeTab === item.id
-                    ? "bg-gray-800 text-white shadow-lg"
-                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                    ? "bg-funlearn8 text-white shadow-lg"
+                    : "text-gray-700 hover:bg-funlearn2 hover:text-funlearn8"
                 }`}
                 title={collapsed ? item.label : ""}
               >
@@ -151,10 +151,10 @@ export default function DashboardSidebar({
               onClick={onLogout}
               className={`w-full flex items-center ${
                 collapsed ? "justify-center px-3" : "space-x-3 px-4"
-              } py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors`}
+              } py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors`}
               title={collapsed ? "Logout" : ""}
             >
-              <span className="text-lg">◼️</span>
+              <span className="text-lg">🚪</span>
               {!collapsed && <span className="font-medium">Logout</span>}
             </button>
           </div>
