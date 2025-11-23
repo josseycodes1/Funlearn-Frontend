@@ -51,7 +51,7 @@ export default function Profile({ user }: ProfileProps) {
 
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
-  // Rank data that matches your backend EXACTLY - NO "Beginner"
+ 
   const backendRanks = [
     { name: "Brain Sprout 🌱", icon: "🌱", threshold: 0 },
     { name: "Curious Thinker 🔍", icon: "🔍", threshold: 20 },
@@ -83,7 +83,7 @@ export default function Profile({ user }: ProfileProps) {
   const fetchUserProfile = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`${BACKEND_URL}/api/users/profile`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/api/users/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -128,10 +128,10 @@ export default function Profile({ user }: ProfileProps) {
     try {
       const token = localStorage.getItem("token");
       
-      // Create a clean payload with only the fields we want to update
+   
       const payload: any = {};
       
-      // Only include fields that are defined and not rank-related
+    
       if (editData.bio !== undefined) payload.bio = editData.bio;
       if (editData.school !== undefined) payload.school = editData.school;
       if (editData.level !== undefined) payload.level = editData.level;

@@ -36,19 +36,12 @@ export default function DashboardOverview() {
     fetchStats();
   }, []);
 
-  const StatCard = ({ title, value, subtitle, icon, color }: any) => (
+  const StatCard = ({ title, value, subtitle }: any) => (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
-          {subtitle && <p className="text-xs text-gray-500 mt-1">{subtitle}</p>}
-        </div>
-        <div
-          className={`w-12 h-12 rounded-lg ${color} flex items-center justify-center`}
-        >
-          <span className="text-xl">{icon}</span>
-        </div>
+      <div>
+        <p className="text-sm font-medium text-gray-600">{title}</p>
+        <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
+        {subtitle && <p className="text-xs text-gray-500 mt-1">{subtitle}</p>}
       </div>
     </div>
   );
@@ -83,7 +76,7 @@ export default function DashboardOverview() {
           </div>
           <div className="hidden md:block">
             <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-              <span className="text-3xl">🎓</span>
+              <span className="text-3xl">⬛</span>
             </div>
           </div>
         </div>
@@ -95,29 +88,21 @@ export default function DashboardOverview() {
           title="Quizzes Completed"
           value={stats.quizzesCompleted}
           subtitle="This month"
-          icon=""
-          color="bg-funlearn2"
         />
         <StatCard
           title="Correct Answers"
           value={stats.correctAnswers}
           subtitle="Total"
-          icon=""
-          color="bg-green-100"
         />
         <StatCard
           title="Current Rank"
           value={`#${stats.currentRank}`}
           subtitle="Among peers"
-          icon=""
-          color="bg-yellow-100"
         />
         <StatCard
           title="Learning Points"
           value={stats.points}
           subtitle="Earned"
-          icon=""
-          color="bg-funlearn3"
         />
       </div>
 
@@ -156,9 +141,6 @@ export default function DashboardOverview() {
         </h2>
         <div className="space-y-4">
           <div className="flex items-center space-x-4 p-3 bg-funlearn1 rounded-lg">
-            <div className="w-8 h-8 bg-funlearn4 rounded-full flex items-center justify-center">
-              <span className="text-funlearn8"></span>
-            </div>
             <div>
               <p className="font-medium text-gray-900">
                 Completed Quiz: Mathematics Basics
@@ -167,9 +149,6 @@ export default function DashboardOverview() {
             </div>
           </div>
           <div className="flex items-center space-x-4 p-3 bg-funlearn1 rounded-lg">
-            <div className="w-8 h-8 bg-funlearn4 rounded-full flex items-center justify-center">
-              <span className="text-funlearn8"></span>
-            </div>
             <div>
               <p className="font-medium text-gray-900">Earned 50 points</p>
               <p className="text-sm text-gray-600">
