@@ -158,7 +158,7 @@ export default function QuizPage() {
   };
 
   const handleEndQuizAfterEasy = async () => {
-    // Submit only easy score and mark as completed
+
     try {
       await api.patch(`/api/questions/score`, {
         newScore: easyScore,
@@ -246,7 +246,7 @@ export default function QuizPage() {
     );
   }
 
-  // Stage: Easy Questions Completed - Show intermediate screen
+ 
   if (currentStage === "easy-completed") {
     const totalEasyQuestions =
       questionSet.questions.easyQuestions?.list.length || 0;
@@ -316,7 +316,7 @@ export default function QuizPage() {
     );
   }
 
-  // Stage: Quiz Fully Completed
+ 
   if (currentStage === "completed") {
     const totalEasyQuestions =
       questionSet.questions.easyQuestions?.list.length || 0;
@@ -390,7 +390,7 @@ export default function QuizPage() {
     );
   }
 
-  // Main Quiz Interface (Easy or Hard stage)
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">

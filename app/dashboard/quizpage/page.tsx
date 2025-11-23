@@ -26,13 +26,13 @@ export default function QuizPage() {
 
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
-  // Create Axios instance with default config
+ 
   const api = axios.create({
     baseURL: BACKEND_URL,
     timeout: 30000,
   });
 
-  // Add token to requests
+
   api.interceptors.request.use((config) => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -41,7 +41,7 @@ export default function QuizPage() {
     return config;
   });
 
-  // Handle responses and errors
+ 
   api.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -82,7 +82,7 @@ export default function QuizPage() {
         quizTopic: topicInput.trim(),
       });
 
-      // Refresh the question sets list to include the newly generated one
+    
       await fetchQuestionSets();
       setTopicInput("");
     } catch (error) {
@@ -103,7 +103,7 @@ export default function QuizPage() {
       alert("Invite token copied to clipboard!");
     } catch (err) {
       console.error("Failed to copy invite token:", err);
-      // Fallback for older browsers
+     
       const textArea = document.createElement("textarea");
       textArea.value = questionSet.inviteToken;
       document.body.appendChild(textArea);
@@ -125,7 +125,7 @@ export default function QuizPage() {
 
       const joinedQuestionSet = response.data;
 
-      // Refresh the question sets list to include the newly joined one
+     
       await fetchQuestionSets();
 
       setJoinToken("");
@@ -133,8 +133,7 @@ export default function QuizPage() {
 
       alert("Successfully joined the quiz!");
 
-      // Optionally, redirect to the joined quiz
-      // startQuiz(joinedQuestionSet._id);
+      
     } catch (error: any) {
       console.error("Error joining quiz:", error);
       alert(
@@ -145,8 +144,8 @@ export default function QuizPage() {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 24) return "bg-green-100 text-green-800"; // 80% of 30
-    if (score >= 18) return "bg-yellow-100 text-yellow-800"; // 60% of 30
+    if (score >= 24) return "bg-green-100 text-green-800"; 
+    if (score >= 18) return "bg-yellow-100 text-yellow-800"; 
     if (score > 0) return "bg-orange-100 text-orange-800";
     return "bg-gray-100 text-gray-800";
   };
@@ -260,7 +259,7 @@ export default function QuizPage() {
               value={topicInput}
               onChange={(e) => setTopicInput(e.target.value)}
               placeholder="Enter a topic to generate questions..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-funlearn8 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 text-black rounded-lg focus:ring-2 focus:ring-funlearn8 focus:border-transparent"
               disabled={isGenerating}
             />
           </div>
