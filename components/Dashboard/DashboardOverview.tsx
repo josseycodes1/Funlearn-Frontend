@@ -75,7 +75,7 @@ export default function DashboardOverview() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">
-              Hello, {user?.userName || "Student"}! 
+              Hello, {user?.userName || "Student"}! ◼️
             </h1>
             <p className="mt-2 opacity-90">
               Keep up the great work! Your learning journey is going amazing.
@@ -83,7 +83,7 @@ export default function DashboardOverview() {
           </div>
           <div className="hidden md:block">
             <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-              <span className="text-3xl"></span>
+              <span className="text-3xl">🎓</span>
             </div>
           </div>
         </div>
@@ -128,21 +128,21 @@ export default function DashboardOverview() {
           <QuickAction
             title="Take a Quiz"
             description="Test your knowledge with fun quizzes"
-            icon=""
+            icon="◼️"
             color="bg-funlearn2"
             onClick={() => (window.location.href = "/dashboard/quizpage")}
           />
           <QuickAction
             title="Ask AI Tutor"
             description="Get help from our AI learning assistant"
-            icon=""
+            icon="⚫"
             color="bg-blue-100"
             onClick={() => (window.location.href = "/dashboard/chatbot")}
           />
           <QuickAction
             title="Join Chat Room"
             description="Collaborate with other students"
-            icon=""
+            icon="⚪"
             color="bg-green-100"
             onClick={() => (window.location.href = "/dashboard/chatroom")}
           />
