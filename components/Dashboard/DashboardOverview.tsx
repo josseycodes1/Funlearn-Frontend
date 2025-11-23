@@ -71,11 +71,11 @@ export default function DashboardOverview() {
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="bg-gray-800 rounded-2xl p-6 text-white">
+      <div className="bg-funlearn8 rounded-2xl p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">
-              Hello, {user?.userName || "Student"}! ◼️
+              Hello, {user?.userName || "Student"}! 🌟
             </h1>
             <p className="mt-2 opacity-90">
               Keep up the great work! Your learning journey is going amazing.
@@ -83,7 +83,7 @@ export default function DashboardOverview() {
           </div>
           <div className="hidden md:block">
             <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-              <span className="text-3xl">⬛</span>
+              <span className="text-3xl">🎓</span>
             </div>
           </div>
         </div>
@@ -95,29 +95,29 @@ export default function DashboardOverview() {
           title="Quizzes Completed"
           value={stats.quizzesCompleted}
           subtitle="This month"
-          icon="🎱"
-          color="bg-gray-100"
+          icon="🎯"
+          color="bg-funlearn2"
         />
         <StatCard
           title="Correct Answers"
           value={stats.correctAnswers}
           subtitle="Total"
           icon="✅"
-          color="bg-gray-100"
+          color="bg-green-100"
         />
         <StatCard
           title="Current Rank"
           value={`#${stats.currentRank}`}
           subtitle="Among peers"
-          icon="⬜"
-          color="bg-gray-100"
+          icon="🏆"
+          color="bg-yellow-100"
         />
         <StatCard
           title="Learning Points"
           value={stats.points}
           subtitle="Earned"
           icon="⭐"
-          color="bg-gray-100"
+          color="bg-funlearn3"
         />
       </div>
 
@@ -128,22 +128,22 @@ export default function DashboardOverview() {
           <QuickAction
             title="Take a Quiz"
             description="Test your knowledge with fun quizzes"
-            icon="🎱"
-            color="bg-gray-100"
+            icon="🎯"
+            color="bg-funlearn2"
             onClick={() => (window.location.href = "/dashboard/quizpage")}
           />
           <QuickAction
             title="Ask AI Tutor"
             description="Get help from our AI learning assistant"
-            icon="⚫"
-            color="bg-gray-100"
+            icon="🤖"
+            color="bg-blue-100"
             onClick={() => (window.location.href = "/dashboard/chatbot")}
           />
           <QuickAction
             title="Join Chat Room"
             description="Collaborate with other students"
-            icon="⚪"
-            color="bg-gray-100"
+            icon="💬"
+            color="bg-green-100"
             onClick={() => (window.location.href = "/dashboard/chatroom")}
           />
         </div>
@@ -155,9 +155,9 @@ export default function DashboardOverview() {
           Recent Activity
         </h2>
         <div className="space-y-4">
-          <div className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
-            <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-              <span className="text-gray-800">✅</span>
+          <div className="flex items-center space-x-4 p-3 bg-funlearn1 rounded-lg">
+            <div className="w-8 h-8 bg-funlearn4 rounded-full flex items-center justify-center">
+              <span className="text-funlearn8">✅</span>
             </div>
             <div>
               <p className="font-medium text-gray-900">
@@ -166,9 +166,9 @@ export default function DashboardOverview() {
               <p className="text-sm text-gray-600">Score: 85% • 2 hours ago</p>
             </div>
           </div>
-          <div className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
-            <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-              <span className="text-gray-800">⭐</span>
+          <div className="flex items-center space-x-4 p-3 bg-funlearn1 rounded-lg">
+            <div className="w-8 h-8 bg-funlearn4 rounded-full flex items-center justify-center">
+              <span className="text-funlearn8">⭐</span>
             </div>
             <div>
               <p className="font-medium text-gray-900">Earned 50 points</p>
