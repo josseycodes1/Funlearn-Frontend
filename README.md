@@ -12,7 +12,7 @@ Funlearn is a revolutionary gamified learning platform that combines AI-powered 
 
 ## 🚀 What Makes Funlearn Unique?
 
-### 🤖 AI-Powered Learning Assistant "Lumi"
+### 🤖 AI-Powered Learning Assistant "Funlearn Genie"
 - **Smart Document Analysis**: Upload PDF textbooks and study materials
 - **Instant Summarization**: Get concise summaries and key point extraction
 - **Personalized Explanations**: Ask questions about your documents and get tailored responses
