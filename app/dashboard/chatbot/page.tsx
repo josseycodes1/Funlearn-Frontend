@@ -408,13 +408,13 @@ export default function ChatBotPage() {
   };
 
   return (
-    <div className="flex h-screen bg-white"> {/* Changed from h-full to h-screen */}
+    <div className="flex h-screen bg-white">
       {/* Chat History Sidebar */}
       <div
         className={`
           w-80 bg-gray-50 border-r border-gray-200 flex flex-col transition-all duration-300
           lg:translate-x-0 lg:relative lg:z-auto
-          ${showChatSidebar ? "translate-x-0 absolute z-40 inset-y-0 left-0" : "-translate-x-full absolute"}
+          ${showChatSidebar ? "translate-x-0 absolute z-40 inset-y-0 left-0 h-screen" : "-translate-x-full absolute h-screen"}
         `}
       >
         {/* Header */}
@@ -532,8 +532,8 @@ export default function ChatBotPage() {
         />
       )}
 
-      {/* Main Chat Area - FIXED: No extra margins or padding causing black space */}
-      <div className="flex-1 flex flex-col min-w-0 h-full"> {/* Added h-full here */}
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col min-w-0 h-screen">
         {/* Chat Header */}
         <div className="flex items-center justify-between p-4 lg:p-6 border-b border-gray-200 bg-white shrink-0">
           <div className="flex items-center space-x-4">
@@ -624,7 +624,7 @@ export default function ChatBotPage() {
           </div>
         </div>
 
-        {/* Messages Area - FIXED: No extra padding/margin at bottom */}
+        {/* Messages Area */}
         <div className="flex-1 overflow-y-auto bg-gray-50">
           {messages.length === 0 ? (
             <div className="h-full flex items-center justify-center p-4 lg:p-8">
@@ -729,7 +729,7 @@ export default function ChatBotPage() {
           )}
         </div>
 
-        {/* Input Area - FIXED: No extra bottom margin */}
+        {/* Input Area */}
         <div className="border-t border-gray-200 bg-white p-4 lg:p-6 shrink-0">
           {/* File Upload Indicator */}
           {uploadedFileName && (
@@ -786,15 +786,26 @@ export default function ChatBotPage() {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                  />
-                </svg>
-              </button>
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                />
+              </svg>
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept=".pdf"
+                onChange={(e) => {
+                  if (e.target.files?.[0]) {
+                    handleFileUpload(e.target.files[0]);
+                  }
+                }}
+                className="hidden"
+              />
+            </button>
 
             {/* Message Input */}
             <input
