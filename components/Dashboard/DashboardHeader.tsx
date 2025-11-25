@@ -108,7 +108,7 @@ export default function DashboardHeader({
         </div>
       </div>
 
-      {/* Mobile Overlay - Light Blue like ChatBotPage */}
+      {/* Mobile Overlay - Only shows when sidebar is open on mobile, same as ChatBotPage */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-gray-600 bg-opacity-30 z-40 md:hidden"
