@@ -40,19 +40,19 @@ export default function DashboardSidebar({
 
   return (
     <>
-      {/* Mobile overlay*/}
+      {/* Mobile overlay - FIXED: Better z-index and interaction */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden" 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" 
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar - FIXED: Better responsive behavior */}
       <div
         className={`
-        fixed inset-y-0 left-0 z-30 bg-white shadow-xl transform transition-all duration-300 ease-in-out 
-        md:translate-x-0 md:static md:inset-0 // CHANGED: lg: → md:
+        fixed inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-all duration-300 ease-in-out 
+        md:relative md:z-auto md:translate-x-0
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         ${sidebarWidth}
       `}
@@ -79,7 +79,7 @@ export default function DashboardSidebar({
             {!collapsed && (
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="md:hidden p-2 rounded-lg hover:bg-gray-100" // CHANGED: lg:hidden → md:hidden
+                className="md:hidden p-2 rounded-lg hover:bg-gray-100"
               >
                 <svg
                   className="w-5 h-5"
@@ -126,7 +126,7 @@ export default function DashboardSidebar({
                 key={item.id}
                 onClick={() => {
                   setActiveTab(item.id);
-                  setSidebarOpen(false);
+                  setSidebarOpen(false); // Close sidebar on mobile when item is clicked
                 }}
                 className={`w-full flex items-center ${
                   collapsed ? "justify-center px-3" : "space-x-3 px-4"
