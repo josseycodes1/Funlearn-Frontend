@@ -409,12 +409,12 @@ export default function ChatBotPage() {
 
   return (
     <div className="flex h-full bg-white">
-      {/* Chat History Sidebar - Fixed: Removed black overlay issue */}
+      {/* Chat History Sidebar - FIXED: No overlay, just slides in/out */}
       <div
         className={`
-          w-80 bg-gray-50 border-r border-gray-200 flex flex-col transition-all duration-300
-          lg:translate-x-0 lg:relative lg:z-auto
-          ${showChatSidebar ? "translate-x-0 absolute z-40 inset-y-0 left-0" : "-translate-x-full absolute"}
+          w-80 bg-gray-50 border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out
+          lg:translate-x-0 lg:relative
+          ${showChatSidebar ? "translate-x-0" : "-translate-x-full absolute"}
         `}
       >
         {/* Header */}
@@ -524,18 +524,10 @@ export default function ChatBotPage() {
         </div>
       </div>
 
-      {/* Mobile Overlay - Fixed: Changed from black to gray with lower opacity */}
-      {showChatSidebar && (
-        <div
-          className="fixed inset-0 bg-gray-600 bg-opacity-30 z-30 lg:hidden"
-          onClick={() => setShowChatSidebar(false)}
-        />
-      )}
-
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      {/* Main Chat Area - FIXED: No bottom margin, proper height */}
+      <div className="flex-1 flex flex-col min-w-0 h-full">
         {/* Chat Header */}
-        <div className="flex items-center justify-between p-4 lg:p-6 border-b border-gray-200 bg-white">
+        <div className="flex items-center justify-between p-4 lg:p-6 border-b border-gray-200 bg-white shrink-0">
           <div className="flex items-center space-x-4">
             {!showChatSidebar && (
               <button
@@ -570,34 +562,41 @@ export default function ChatBotPage() {
           </div>
 
           <div className="flex items-center space-x-3">
-            {/* Generate Quiz Button - Moved to header and made smaller */}
+            {/* Generate Quiz Button with Tooltip */}
             {currentChatId && (
-              <button
-                onClick={handleGenerateQuiz}
-                disabled={isGeneratingQuiz}
-                className="flex items-center space-x-2 px-3 py-2 bg-funlearn8 text-white rounded-lg font-medium hover:bg-funlearn7 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-              >
-                {isGeneratingQuiz ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
-                )}
-                <span className="hidden sm:inline">
-                  {isGeneratingQuiz ? "Generating..." : "Generate Quiz"}
-                </span>
-              </button>
+              <div className="relative group">
+                <button
+                  onClick={handleGenerateQuiz}
+                  disabled={isGeneratingQuiz}
+                  className="flex items-center space-x-2 px-3 py-2 bg-funlearn8 text-white rounded-lg font-medium hover:bg-funlearn7 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                  title="Generate Quiz from this conversation"
+                >
+                  {isGeneratingQuiz ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                  )}
+                  <span className="hidden sm:inline">
+                    {isGeneratingQuiz ? "Generating..." : "Generate Quiz"}
+                  </span>
+                </button>
+                {/* Tooltip for small screens */}
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap sm:hidden">
+                  Generate Quiz
+                </div>
+              </div>
             )}
 
             {currentChatId && (
@@ -624,7 +623,7 @@ export default function ChatBotPage() {
           </div>
         </div>
 
-        {/* Messages Area */}
+        {/* Messages Area - FIXED: No bottom margin */}
         <div className="flex-1 overflow-y-auto bg-gray-50">
           {messages.length === 0 ? (
             <div className="h-full flex items-center justify-center p-4 lg:p-8">
@@ -729,8 +728,8 @@ export default function ChatBotPage() {
           )}
         </div>
 
-        {/* Input Area */}
-        <div className="border-t border-gray-200 bg-white p-4 lg:p-6">
+        {/* Input Area - FIXED: No extra margin */}
+        <div className="border-t border-gray-200 bg-white p-4 lg:p-6 shrink-0">
           {/* File Upload Indicator */}
           {uploadedFileName && (
             <div className="mb-4 flex items-center justify-between p-3 bg-funlearn2 rounded-lg">

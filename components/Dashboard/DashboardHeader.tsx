@@ -25,7 +25,7 @@ export default function DashboardHeader({
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4">
         <div className="flex items-center space-x-3 md:space-x-4">
-          {/* Mobile menu button - Fixed: Properly clickable */}
+          {/* Mobile menu button - Fixed: No overlay needed */}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="p-2 rounded-lg hover:bg-gray-100 md:hidden" 
@@ -45,7 +45,7 @@ export default function DashboardHeader({
             </svg>
           </button>
 
-          {/* Toggle General Sidebar Button - Also make this purple */}
+          {/* Toggle General Sidebar Button */}
           {!showGeneralSidebar && (
             <button
               onClick={handleToggleGeneralSidebar}
