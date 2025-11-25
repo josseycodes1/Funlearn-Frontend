@@ -36,11 +36,11 @@ export default function ChatBotPage() {
   // Hide general sidebar when component mounts
   useEffect(() => {
     setShowGeneralSidebar(false);
-    setSidebarCollapsed(true); // Collapse the main sidebar
+    setSidebarCollapsed(true);
 
     return () => {
       setShowGeneralSidebar(true);
-      setSidebarCollapsed(false); // Expand the main sidebar
+      setSidebarCollapsed(false);
     };
   }, [setShowGeneralSidebar, setSidebarCollapsed]);
 
@@ -119,7 +119,6 @@ export default function ChatBotPage() {
     setInputMessage("");
     setUploadedFileName(null);
     setUploadedFile(null);
-    // Focus input after new chat
     setTimeout(() => {
       if (inputRef.current) {
         inputRef.current.focus();
@@ -132,7 +131,6 @@ export default function ChatBotPage() {
     await fetchChatHistory(conversation.chatId);
     setUploadedFileName(null);
     setUploadedFile(null);
-    // Focus input after selecting conversation
     setTimeout(() => {
       if (inputRef.current) {
         inputRef.current.focus();
@@ -164,7 +162,6 @@ export default function ChatBotPage() {
       if (response.ok) {
         const data = await response.json();
 
-        // Add success message to chat
         const successMessage: Message = {
           id: Date.now().toString(),
           role: "assistant",
@@ -173,14 +170,11 @@ export default function ChatBotPage() {
         };
 
         setMessages((prev) => [...prev, successMessage]);
-
-        // Optional: You could also show a toast notification here
         console.log("Quiz generated successfully:", data);
       } else {
         console.error("Failed to generate quiz:", response.status);
         const errorData = await response.text();
 
-        // Add error message to chat
         const errorMessage: Message = {
           id: Date.now().toString(),
           role: "assistant",
@@ -194,7 +188,6 @@ export default function ChatBotPage() {
     } catch (error) {
       console.error("Error generating quiz:", error);
 
-      // Add error message to chat
       const errorMessage: Message = {
         id: Date.now().toString(),
         role: "assistant",
@@ -212,7 +205,6 @@ export default function ChatBotPage() {
   // Extract text from PDF using unpdf
   const extractTextFromPDF = async (file: File): Promise<string> => {
     try {
-      // Dynamically import unpdf to avoid SSR issues
       const { extractText, getDocumentProxy } = await import("unpdf");
       const pdfBuffer = await file.arrayBuffer();
       const pdf = await getDocumentProxy(new Uint8Array(pdfBuffer));
@@ -230,10 +222,8 @@ export default function ChatBotPage() {
   const detectAction = (message: string, hasFile: boolean): string => {
     const text = message.toLowerCase().trim();
 
-    // Case 1: File only (new or existing chat)
     if (hasFile && !message) return "summarize";
 
-    // Case 2: File + message (in new or existing chat)
     if (hasFile && message) {
       if (
         text.includes("summarize") ||
@@ -250,7 +240,6 @@ export default function ChatBotPage() {
       return "question";
     }
 
-    // Case 3: Text only (existing or new chat)
     if (message) {
       if (text.includes("resource") || text.includes("learn more"))
         return "resources";
@@ -268,7 +257,6 @@ export default function ChatBotPage() {
     const currentInput = inputMessage.trim();
     const currentFile = uploadedFile;
 
-    // Create display message for UI
     let displayContent = "";
     if (currentFile && currentInput) {
       displayContent = `${currentInput}\n\n[Attached: ${uploadedFileName}]`;
@@ -295,7 +283,6 @@ export default function ChatBotPage() {
       const token = localStorage.getItem("token");
       let extractedText = "";
 
-      // Extract text from PDF if file is present
       if (currentFile) {
         try {
           extractedText = await extractTextFromPDF(currentFile);
@@ -317,31 +304,23 @@ export default function ChatBotPage() {
         }
       }
 
-      // Determine action type
       const action = detectAction(currentInput, !!currentFile);
 
-      // Construct payload according to your specification
       const payload: any = {
         action: action,
       };
 
-      // Add fileText only if file is present
       if (currentFile) {
         payload.fileText = extractedText;
       }
 
-      // Add message only if user typed something
       if (currentInput) {
         payload.message = currentInput;
       }
 
-      // Include chatId if it exists
       if (currentChatId) {
         payload.chatId = currentChatId;
       }
-
-      console.log("Sending request to:", `${BACKEND_URL}/api/ai/chat`);
-      console.log("Final payload:", payload);
 
       const response = await fetch(`${BACKEND_URL}/api/ai/chat`, {
         method: "POST",
@@ -370,7 +349,6 @@ export default function ChatBotPage() {
       } else {
         console.error("Failed to send message:", response.status);
         const errorData = await response.text();
-        console.error("Error response:", errorData);
         const errorMessage: Message = {
           id: (Date.now() + 1).toString(),
           role: "assistant",
@@ -390,11 +368,9 @@ export default function ChatBotPage() {
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
-      // Clear file input
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
-      // Focus input after sending
       setTimeout(() => {
         if (inputRef.current) {
           inputRef.current.focus();
@@ -411,9 +387,6 @@ export default function ChatBotPage() {
 
     setUploadedFileName(file.name);
     setUploadedFile(file);
-
-    // DON'T create a message here - just show the file indicator
-    // The message will be created when the user actually sends
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -585,7 +558,7 @@ export default function ChatBotPage() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col w-full">
+      <div className="flex-1 flex flex-col w-full md:w-auto">
         {/* Chat Header */}
         <div className="flex items-center justify-between p-4 md:p-6 border-b border-gray-200 bg-white">
           <div className="flex items-center space-x-4">
