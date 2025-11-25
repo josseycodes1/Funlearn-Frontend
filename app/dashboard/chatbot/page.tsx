@@ -59,20 +59,6 @@ export default function ChatBotPage() {
     }
   }, []);
 
-  // Close sidebar on mobile when message is sent or conversation is selected
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768 && showChatSidebar) {
-        setShowChatSidebar(false);
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    handleResize(); // Check on initial load
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, [showChatSidebar]);
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -146,12 +132,6 @@ export default function ChatBotPage() {
     await fetchChatHistory(conversation.chatId);
     setUploadedFileName(null);
     setUploadedFile(null);
-    
-    // Close sidebar on mobile after selecting conversation
-    if (window.innerWidth < 768) {
-      setShowChatSidebar(false);
-    }
-    
     // Focus input after selecting conversation
     setTimeout(() => {
       if (inputRef.current) {
@@ -456,13 +436,13 @@ export default function ChatBotPage() {
       {/* Chat History Sidebar */}
       <div
         className={`
-          w-80 bg-gray-50 border-r border-gray-200 flex flex-col transition-all duration-300 z-30
-          fixed md:relative h-full
-          ${showChatSidebar ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
-        `}
+        w-80 bg-gray-50 border-r border-gray-200 flex flex-col transition-all duration-300
+        ${showChatSidebar ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+        fixed md:relative h-full z-30
+      `}
       >
         {/* Header */}
-        <div className="p-4 md:p-6 border-b border-gray-200 bg-white">
+        <div className="p-6 border-b border-gray-200 bg-white">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900">
               Chat History
@@ -568,7 +548,7 @@ export default function ChatBotPage() {
         </div>
 
         {/* Generate Quiz Button */}
-        <div className="p-4 md:p-6 border-t border-gray-200 bg-white">
+        <div className="p-6 border-t border-gray-200 bg-white">
           <button
             onClick={handleGenerateQuiz}
             disabled={!currentChatId || isGeneratingQuiz}
@@ -605,7 +585,7 @@ export default function ChatBotPage() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col w-full md:w-auto">
+      <div className="flex-1 flex flex-col w-full">
         {/* Chat Header */}
         <div className="flex items-center justify-between p-4 md:p-6 border-b border-gray-200 bg-white">
           <div className="flex items-center space-x-4">
@@ -633,7 +613,7 @@ export default function ChatBotPage() {
               <h2 className="text-lg md:text-xl font-semibold text-gray-900">
                 {currentChatId ? "AI Chat Assistant" : "New Chat"}
               </h2>
-              <p className="text-xs md:text-sm text-gray-600">
+              <p className="text-sm text-gray-600">
                 {currentChatId
                   ? "Continue your conversation"
                   : "Start a new conversation with AI"}
@@ -644,7 +624,7 @@ export default function ChatBotPage() {
           {currentChatId && (
             <button
               onClick={handleNewChat}
-              className="flex items-center space-x-2 px-3 py-2 md:px-4 md:py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors shrink-0"
+              className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors shrink-0"
             >
               <svg
                 className="w-4 h-4 shrink-0"
@@ -659,7 +639,7 @@ export default function ChatBotPage() {
                   d="M12 4v16m8-8H4"
                 />
               </svg>
-              <span className="hidden sm:inline">New Chat</span>
+              <span>New Chat</span>
             </button>
           )}
         </div>
@@ -874,21 +854,8 @@ export default function ChatBotPage() {
               {isLoading ? (
                 <div className="w-4 h-4 md:w-5 md:h-5 border-2 border-white border-t-transparent rounded-full animate-spin shrink-0"></div>
               ) : (
-                <span className="hidden sm:inline">Send</span>
+                "Send"
               )}
-              <svg 
-                className="w-4 h-4 sm:hidden" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                />
-              </svg>
             </button>
           </form>
           <p className="text-xs text-gray-500 mt-2 text-center">
