@@ -409,7 +409,7 @@ export default function ChatBotPage() {
 
   return (
     <div className="flex h-full bg-white">
-      {/* Chat History Sidebar - Responsive */}
+      {/* Chat History Sidebar - Fixed: Removed black overlay issue */}
       <div
         className={`
           w-80 bg-gray-50 border-r border-gray-200 flex flex-col transition-all duration-300
@@ -522,48 +522,12 @@ export default function ChatBotPage() {
             </div>
           )}
         </div>
-
-        {/* Generate Quiz Button - Always Visible */}
-        <div className="p-4 lg:p-6 border-t border-gray-200 bg-white">
-          <button
-            onClick={handleGenerateQuiz}
-            disabled={!currentChatId || isGeneratingQuiz}
-            className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-funlearn8 text-white rounded-lg font-medium hover:bg-funlearn7 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isGeneratingQuiz ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>Generating Quiz...</span>
-              </>
-            ) : (
-              <>
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                <span>Generate Quiz</span>
-              </>
-            )}
-          </button>
-          <p className="text-xs text-gray-500 mt-2 text-center">
-            Create a quiz based on the current conversation
-          </p>
-        </div>
       </div>
 
-      {/* Mobile Overlay */}
+      {/* Mobile Overlay - Fixed: Changed from black to gray with lower opacity */}
       {showChatSidebar && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+          className="fixed inset-0 bg-gray-600 bg-opacity-30 z-30 lg:hidden"
           onClick={() => setShowChatSidebar(false)}
         />
       )}
@@ -605,27 +569,59 @@ export default function ChatBotPage() {
             </div>
           </div>
 
-          {currentChatId && (
-            <button
-              onClick={handleNewChat}
-              className="flex items-center space-x-2 px-3 lg:px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors shrink-0 text-sm lg:text-base"
-            >
-              <svg
-                className="w-4 h-4 shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+          <div className="flex items-center space-x-3">
+            {/* Generate Quiz Button - Moved to header and made smaller */}
+            {currentChatId && (
+              <button
+                onClick={handleGenerateQuiz}
+                disabled={isGeneratingQuiz}
+                className="flex items-center space-x-2 px-3 py-2 bg-funlearn8 text-white rounded-lg font-medium hover:bg-funlearn7 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-              <span className="hidden sm:inline">New Chat</span>
-            </button>
-          )}
+                {isGeneratingQuiz ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                )}
+                <span className="hidden sm:inline">
+                  {isGeneratingQuiz ? "Generating..." : "Generate Quiz"}
+                </span>
+              </button>
+            )}
+
+            {currentChatId && (
+              <button
+                onClick={handleNewChat}
+                className="flex items-center space-x-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors shrink-0 text-sm"
+              >
+                <svg
+                  className="w-4 h-4 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                <span className="hidden sm:inline">New Chat</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Messages Area */}
