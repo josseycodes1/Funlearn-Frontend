@@ -408,7 +408,7 @@ export default function ChatBotPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-white overflow-hidden">
+    <div className="flex bg-white">
       {/* Chat History Sidebar */}
       <div
         className={`
@@ -528,12 +528,12 @@ export default function ChatBotPage() {
       {showChatSidebar && (
         <div
           className="fixed inset-0 bg-gray-600 bg-opacity-30 z-30 lg:hidden"
-          onClick={() => setShowChatSidebar(false)}
+          onClick={() => setShowChatSidebar(true)}
         />
       )}
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0 min-h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col">
         {/* Chat Header */}
         <div className="flex items-center justify-between p-4 lg:p-6 border-b border-gray-200 bg-white shrink-0">
           <div className="flex items-center space-x-4">
