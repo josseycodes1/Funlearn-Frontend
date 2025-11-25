@@ -32,14 +32,26 @@ export default function ChatBotPage() {
 
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
-  // Hide general sidebar when component mounts
+  // Hide general sidebar when component mounts and fix body styles
   useEffect(() => {
     setShowGeneralSidebar(false);
     setSidebarCollapsed(true);
+    
+    // Fix body styles to prevent scrolling and black background
+    document.body.style.overflow = 'hidden';
+    document.body.style.height = '100vh';
+    document.documentElement.style.overflow = 'hidden';
+    document.documentElement.style.height = '100vh';
 
     return () => {
       setShowGeneralSidebar(true);
       setSidebarCollapsed(false);
+      
+      // Reset body styles
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.height = '';
     };
   }, [setShowGeneralSidebar, setSidebarCollapsed]);
 
@@ -408,13 +420,13 @@ export default function ChatBotPage() {
   };
 
   return (
-    <div className="flex bg-white h-screen overflow-hidden">
+    <div className="flex bg-white h-screen fixed inset-0">
       {/* Chat History Sidebar */}
       <div
         className={`
           w-80 bg-gray-50 border-r border-gray-200 flex flex-col transition-all duration-300
           lg:translate-x-0 lg:relative lg:z-auto
-          ${showChatSidebar ? "translate-x-0 absolute z-40 inset-y-0 left-0 h-screen" : "-translate-x-full absolute h-screen"}
+          ${showChatSidebar ? "translate-x-0 absolute z-40 inset-y-0 left-0 h-full" : "-translate-x-full absolute h-full"}
         `}
       >
         {/* Header */}
@@ -532,8 +544,8 @@ export default function ChatBotPage() {
         />
       )}
 
-      {/* Main Chat Area - Not Scrollable */}
-      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+      {/* Main Chat Area - Fixed height, no scroll */}
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         {/* Chat Header */}
         <div className="flex items-center justify-between p-4 lg:p-6 border-b border-gray-200 bg-white shrink-0">
           <div className="flex items-center space-x-4">
@@ -624,7 +636,7 @@ export default function ChatBotPage() {
           </div>
         </div>
 
-        {/* Messages Area - Scrollable */}
+        {/* Messages Area - Only this area scrolls */}
         <div className="flex-1 overflow-y-auto bg-gray-50">
           {messages.length === 0 ? (
             <div className="h-full flex items-center justify-center p-4 lg:p-8">
@@ -729,7 +741,7 @@ export default function ChatBotPage() {
           )}
         </div>
 
-        {/* Input Area */}
+        {/* Input Area - Fixed at bottom */}
         <div className="border-t border-gray-200 bg-white p-4 lg:p-6 shrink-0">
           {/* File Upload Indicator */}
           {uploadedFileName && (
