@@ -408,7 +408,7 @@ export default function ChatBotPage() {
   };
 
   return (
-    <div className="flex bg-white">
+    <div className="flex bg-white h-screen overflow-hidden">
       {/* Chat History Sidebar */}
       <div
         className={`
@@ -463,7 +463,7 @@ export default function ChatBotPage() {
           </button>
         </div>
 
-        {/* Conversations List */}
+        {/* Conversations List - Scrollable */}
         <div className="flex-1 overflow-y-auto">
           {conversations.length === 0 ? (
             <div className="p-6 text-center text-gray-500">
@@ -532,8 +532,8 @@ export default function ChatBotPage() {
         />
       )}
 
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0 min-h-screen overflow-hidden">
+      {/* Main Chat Area - Not Scrollable */}
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         {/* Chat Header */}
         <div className="flex items-center justify-between p-4 lg:p-6 border-b border-gray-200 bg-white shrink-0">
           <div className="flex items-center space-x-4">
@@ -624,7 +624,7 @@ export default function ChatBotPage() {
           </div>
         </div>
 
-        {/* Messages Area */}
+        {/* Messages Area - Scrollable */}
         <div className="flex-1 overflow-y-auto bg-gray-50">
           {messages.length === 0 ? (
             <div className="h-full flex items-center justify-center p-4 lg:p-8">
