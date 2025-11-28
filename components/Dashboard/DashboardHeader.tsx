@@ -41,14 +41,6 @@ export default function DashboardHeader({
     setSidebarCollapsed(false);
   };
 
-  const handleMobileMenuToggle = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
-
-  const handleMobileMenuClose = () => {
-    setMobileMenuOpen(false);
-  };
-
   // Get user's first initial for the avatar
   const getUserInitial = () => {
     if (!user) return "U";
@@ -92,25 +84,13 @@ export default function DashboardHeader({
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4">
         <div className="flex items-center space-x-3 md:space-x-4">
-          {/* Mobile menu button */}
-          <button
-            onClick={handleMobileMenuToggle}
-            className="p-2 rounded-lg hover:bg-gray-100 md:hidden" 
+          {/* Mobile menu button - SIMPLE AND WORKING */}
+          <div 
+            className="text-purple-600 text-2xl cursor-pointer md:hidden z-50"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            <svg
-              className="w-5 h-5 text-purple-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </button>
+            {mobileMenuOpen ? '✕' : '☰'}
+          </div>
 
           {/* Toggle General Sidebar Button */}
           {!showGeneralSidebar && (
@@ -175,39 +155,63 @@ export default function DashboardHeader({
         </div>
       </div>
 
-      {/* Mobile Menu - No black overlay, just a clean dropdown */}
-      {mobileMenuOpen && (
-        <div className="absolute top-full left-0 right-0 bg-white border-b border-gray-200 shadow-lg md:hidden z-50">
-          <div className="px-4 py-3 space-y-2">
+      {/* Mobile Menu - Clean dropdown on the RIGHT side */}
+      <div className={`fixed top-0 right-0 h-full w-4/5 max-w-sm bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50 md:hidden ${
+        mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+      }`}>
+        {/* Close button at the top */}
+        <div className="flex justify-end p-4 border-b border-gray-200">
+          <div 
+            className="text-purple-600 text-2xl cursor-pointer"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            ✕
+          </div>
+        </div>
+        
+        {/* Menu items */}
+        <div className="p-6">
+          <ul className="space-y-4">
             {mobileMenuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  handleMobileMenuClose();
-                  // You can add navigation logic here if needed
-                }}
-                className="w-full flex items-center space-x-3 px-3 py-2 text-left text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <span className="text-lg">{item.icon}</span>
-                <span className="font-medium">{item.label}</span>
-              </button>
+              <li key={item.id}>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    // Add navigation logic here if needed
+                  }}
+                  className="w-full flex items-center space-x-3 px-3 py-3 text-left text-gray-700 hover:bg-purple-50 rounded-lg transition-colors"
+                >
+                  <span className="text-xl">{item.icon}</span>
+                  <span className="font-medium text-lg">{item.label}</span>
+                </button>
+              </li>
             ))}
             
             {/* Logout option */}
-            <button
-              onClick={() => {
-                handleMobileMenuClose();
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                window.location.href = '/login';
-              }}
-              className="w-full flex items-center space-x-3 px-3 py-2 text-left text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-            >
-              <span className="text-lg">🚪</span>
-              <span className="font-medium">Logout</span>
-            </button>
-          </div>
+            <li className="border-t border-gray-200 pt-4 mt-4">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  localStorage.removeItem('token');
+                  localStorage.removeItem('user');
+                  window.location.href = '/login';
+                }}
+                className="w-full flex items-center space-x-3 px-3 py-3 text-left text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              >
+                <span className="text-xl">🚪</span>
+                <span className="font-medium text-lg">Logout</span>
+              </button>
+            </li>
+          </ul>
         </div>
+      </div>
+
+      {/* Mobile overlay - Only when menu is open */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-30 z-40 md:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
       )}
     </header>
   );
