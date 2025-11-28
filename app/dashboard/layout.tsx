@@ -194,8 +194,8 @@ function DashboardContent({
       />
 
       <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Fixed: Removed user prop from DashboardHeader */}
         <DashboardHeader
-          user={user}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           showGeneralSidebar={showGeneralSidebar}
