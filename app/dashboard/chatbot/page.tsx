@@ -454,24 +454,24 @@ export default function ChatBotPage() {
   return (
     <div className="flex h-screen bg-gray-50 fixed inset-0">
       {/* Main Dashboard Sidebar - FIXED: Proper z-index for mobile */}
-      <DashboardHeader
+      <DashboardSidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
-        showGeneralSidebar={showGeneralSidebar}
+        user={user}
+        onLogout={handleLogout}
+        hideGeneralSidebar={false} // Always show the sidebar, but control visibility via context
+        collapsed={sidebarCollapsed}
       />
 
-       {/* Main Content Area below header */}
-      <div className="flex-1 flex min-h-0 relative">
-        {/* Main Dashboard Sidebar - FIXED: Proper z-index */}
-        <DashboardSidebar
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-h-0">
+        {/* Dashboard Header */}
+        <DashboardHeader
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
-          user={user}
-          onLogout={handleLogout}
-          hideGeneralSidebar={false}
-          collapsed={sidebarCollapsed}
+          showGeneralSidebar={showGeneralSidebar}
         />
 
         {/* Main Chat Content */}
