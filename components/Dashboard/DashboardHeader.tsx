@@ -22,6 +22,7 @@ export default function DashboardHeader({
 }: DashboardHeaderProps) {
   const { setShowGeneralSidebar, setSidebarCollapsed } = useSidebar();
   const [user, setUser] = useState<User | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     // Get user data from localStorage
@@ -38,6 +39,14 @@ export default function DashboardHeader({
   const handleToggleGeneralSidebar = () => {
     setShowGeneralSidebar(true);
     setSidebarCollapsed(false);
+  };
+
+  const handleMobileMenuToggle = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const handleMobileMenuClose = () => {
+    setMobileMenuOpen(false);
   };
 
   // Get user's first initial for the avatar
@@ -68,13 +77,24 @@ export default function DashboardHeader({
     return "Student";
   };
 
+  // Mobile menu items with icons and full text
+  const mobileMenuItems = [
+    { id: "overview", label: "Overview", icon: "📊" },
+    { id: "chatbot", label: "AI Chatbot", icon: "🤖" },
+    { id: "quiz", label: "Quiz", icon: "📝" },
+    { id: "chatroom", label: "Chat Room", icon: "💬" },
+    { id: "leaderboard", label: "Leaderboard", icon: "🏆" },
+    { id: "profile", label: "Profile", icon: "👤" },
+    { id: "settings", label: "Settings", icon: "⚙️" },
+  ];
+
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4">
         <div className="flex items-center space-x-3 md:space-x-4">
           {/* Mobile menu button */}
           <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
+            onClick={handleMobileMenuToggle}
             className="p-2 rounded-lg hover:bg-gray-100 md:hidden" 
           >
             <svg
@@ -154,6 +174,41 @@ export default function DashboardHeader({
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu - No black overlay, just a clean dropdown */}
+      {mobileMenuOpen && (
+        <div className="absolute top-full left-0 right-0 bg-white border-b border-gray-200 shadow-lg md:hidden z-50">
+          <div className="px-4 py-3 space-y-2">
+            {mobileMenuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  handleMobileMenuClose();
+                  // You can add navigation logic here if needed
+                }}
+                className="w-full flex items-center space-x-3 px-3 py-2 text-left text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <span className="text-lg">{item.icon}</span>
+                <span className="font-medium">{item.label}</span>
+              </button>
+            ))}
+            
+            {/* Logout option */}
+            <button
+              onClick={() => {
+                handleMobileMenuClose();
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+              }}
+              className="w-full flex items-center space-x-3 px-3 py-2 text-left text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            >
+              <span className="text-lg">🚪</span>
+              <span className="font-medium">Logout</span>
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
