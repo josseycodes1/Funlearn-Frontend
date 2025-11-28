@@ -1,11 +1,13 @@
 "use client";
 import { useSidebar } from "@/contexts/SidebarContext";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface DashboardHeaderProps {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
   showGeneralSidebar?: boolean;
+  onTabChange?: (tab: string) => void; 
 }
 
 interface User {
@@ -19,10 +21,12 @@ export default function DashboardHeader({
   sidebarOpen,
   setSidebarOpen,
   showGeneralSidebar = true,
+  onTabChange, // Add this prop
 }: DashboardHeaderProps) {
   const { setShowGeneralSidebar, setSidebarCollapsed } = useSidebar();
   const [user, setUser] = useState<User | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     // Get user data from localStorage
@@ -39,6 +43,42 @@ export default function DashboardHeader({
   const handleToggleGeneralSidebar = () => {
     setShowGeneralSidebar(true);
     setSidebarCollapsed(false);
+  };
+
+  // Navigation function
+  const handleNavigation = (tab: string) => {
+    setMobileMenuOpen(false);
+    
+    if (onTabChange) {
+      onTabChange(tab); // Use the passed function if available
+    } else {
+      // Fallback navigation
+      switch (tab) {
+        case "overview":
+          router.push("/dashboard");
+          break;
+        case "chatbot":
+          router.push("/dashboard/chatbot");
+          break;
+        case "quiz":
+          router.push("/dashboard/quizpage");
+          break;
+        case "chatroom":
+          router.push("/dashboard/chatroom");
+          break;
+        case "leaderboard":
+          router.push("/dashboard/leaderboard");
+          break;
+        case "profile":
+          router.push("/dashboard/profile-settings");
+          break;
+        case "settings":
+          router.push("/dashboard/settings");
+          break;
+        default:
+          router.push("/dashboard");
+      }
+    }
   };
 
   // Get user's first initial for the avatar
@@ -173,10 +213,7 @@ export default function DashboardHeader({
             {mobileMenuItems.map((item) => (
               <li key={item.id}>
                 <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    // Add navigation logic here if needed
-                  }}
+                  onClick={() => handleNavigation(item.id)}
                   className="w-full flex items-center space-x-3 px-3 py-3 text-left text-gray-700 hover:bg-purple-50 rounded-lg transition-colors"
                 >
                   <span className="text-xl">{item.icon}</span>

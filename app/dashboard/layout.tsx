@@ -1,4 +1,3 @@
-// app/dashboard/layout.tsx
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
@@ -199,6 +198,7 @@ function DashboardContent({
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           showGeneralSidebar={showGeneralSidebar}
+          onTabChange={handleTabChange}
         />
 
         <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
