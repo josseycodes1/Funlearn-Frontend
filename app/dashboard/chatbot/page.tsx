@@ -31,7 +31,7 @@ export default function ChatBotPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
-  const [showChatSidebar, setShowChatSidebar] = useState(true);
+  const [showChatSidebar, setShowChatSidebar] = useState(false);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isGeneratingQuiz, setIsGeneratingQuiz] = useState(false);
