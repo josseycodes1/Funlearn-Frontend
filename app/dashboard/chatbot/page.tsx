@@ -466,7 +466,7 @@ export default function ChatBotPage() {
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-0">
         {/* Dashboard Header */}
         <DashboardHeader
           sidebarOpen={sidebarOpen}
@@ -475,7 +475,7 @@ export default function ChatBotPage() {
         />
 
         {/* Main Chat Content */}
-        <div className="flex-1 flex bg-white overflow-hidden">
+        <div className="flex-1 flex bg-white min-h-0">
           {/* Chat History Sidebar */}
           <div
             className={`
@@ -600,7 +600,7 @@ export default function ChatBotPage() {
           )}
 
           {/* Main Chat Area - Fixed height, no scroll */}
-          <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+          <div className="flex-1 flex flex-col min-h-0">
             {/* Chat Header */}
             <div className="flex items-center justify-between p-4 lg:p-6 border-b border-gray-200 bg-white shrink-0">
               <div className="flex items-center space-x-4">
