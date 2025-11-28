@@ -114,13 +114,12 @@ export default function DashboardHeader({
 
   // Mobile menu items with icons and full text
   const mobileMenuItems = [
-    { id: "overview", label: "Overview", icon: "📊" },
-    { id: "chatbot", label: "AI Chatbot", icon: "🤖" },
-    { id: "quiz", label: "Quiz", icon: "📝" },
-    { id: "chatroom", label: "Chat Room", icon: "💬" },
-    { id: "leaderboard", label: "Leaderboard", icon: "🏆" },
-    { id: "profile", label: "Profile", icon: "👤" },
-    { id: "settings", label: "Settings", icon: "⚙️" },
+    { id: "overview", label: "Overview", icon: "" },
+    { id: "chatbot", label: "AI Chatbot", icon: "" },
+    { id: "quiz", label: "Quiz", icon: "" },
+    { id: "chatroom", label: "Chat Room", icon: "" },
+    { id: "leaderboard", label: "Leaderboard", icon: "" },
+    { id: "settings", label: "Settings", icon: "" },
   ];
 
   return (
