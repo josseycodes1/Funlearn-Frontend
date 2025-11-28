@@ -481,7 +481,7 @@ export default function ChatBotPage() {
             className={`
               w-80 bg-gray-50 border-r border-gray-200 flex flex-col transition-all duration-300
               lg:translate-x-0 lg:relative lg:z-30
-              ${showChatSidebar ? "translate-x-0 absolute z-40 inset-y-0 left-0 h-full" : "-translate-x-full absolute h-full"}
+              ${showChatSidebar ? "translate-x-0 absolute z-50 inset-y-0 left-0 h-full" : "-translate-x-full absolute h-full"}
             `}
           >
             {/* Header */}
@@ -492,7 +492,7 @@ export default function ChatBotPage() {
                 </h2>
                 <button
                   onClick={() => setShowChatSidebar(false)}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors lg:hidden"
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors lg:hidden z-60"
                 >
                   <svg
                     className="w-4 h-4 text-purple-600"
@@ -594,7 +594,7 @@ export default function ChatBotPage() {
           {/* Mobile Overlay for Chat Sidebar */}
           {showChatSidebar && (
             <div
-              className="fixed inset-0 bg-gray-600 bg-opacity-30 z-30 lg:hidden"
+              className="fixed inset-0 bg-gray-600 bg-opacity-30 z-40 lg:hidden"
               onClick={() => setShowChatSidebar(false)}
             />
           )}
