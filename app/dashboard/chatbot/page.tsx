@@ -18,6 +18,13 @@ interface Conversation {
   createdAt: string;
 }
 
+interface User {
+  userName: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+}
+
 export default function ChatBotPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
@@ -30,6 +37,7 @@ export default function ChatBotPage() {
   const [isGeneratingQuiz, setIsGeneratingQuiz] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("chatbot");
+  const [user, setUser] = useState<User | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -38,11 +46,17 @@ export default function ChatBotPage() {
 
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
-  // Mock user data - replace with actual user data from your auth context
-  const user = {
-    userName: "Student",
-    email: "student@example.com"
-  };
+  // Get user data from localStorage
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      try {
+        setUser(JSON.parse(userData));
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    }
+  }, []);
 
   // Hide general sidebar when component mounts and fix body styles
   useEffect(() => {
@@ -432,13 +446,14 @@ export default function ChatBotPage() {
   };
 
   const handleLogout = () => {
-    // Implement logout logic here
-    console.log("Logging out...");
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
   };
 
   return (
     <div className="flex h-screen bg-gray-50 fixed inset-0">
-      {/* Main Dashboard Sidebar */}
+      {/* Main Dashboard Sidebar - FIXED: Proper z-index for mobile */}
       <DashboardSidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -446,7 +461,7 @@ export default function ChatBotPage() {
         setSidebarOpen={setSidebarOpen}
         user={user}
         onLogout={handleLogout}
-        hideGeneralSidebar={!showGeneralSidebar}
+        hideGeneralSidebar={false} // Always show the sidebar, but control visibility via context
         collapsed={sidebarCollapsed}
       />
 
@@ -454,7 +469,6 @@ export default function ChatBotPage() {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Dashboard Header */}
         <DashboardHeader
-          user={user}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           showGeneralSidebar={showGeneralSidebar}
@@ -466,7 +480,7 @@ export default function ChatBotPage() {
           <div
             className={`
               w-80 bg-gray-50 border-r border-gray-200 flex flex-col transition-all duration-300
-              lg:translate-x-0 lg:relative lg:z-auto
+              lg:translate-x-0 lg:relative lg:z-30
               ${showChatSidebar ? "translate-x-0 absolute z-40 inset-y-0 left-0 h-full" : "-translate-x-full absolute h-full"}
             `}
           >
